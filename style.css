@@ -348,3 +348,75 @@ a { color: inherit; cursor: var(--pointer); }
   #icons { bottom: auto; }
   #stickers { top: 290px; bottom: auto; }
 }
+
+/* ================= v3: scattered desktop ================= */
+#icons { inset: 0; display: block; }
+.icon {
+  position: absolute; width: auto; padding: 4px;
+  transform: rotate(var(--r, 0deg)); transition: transform .12s steps(2);
+  font-size: 15px;
+}
+.icon svg { width: var(--s); height: var(--s); }
+.icon:hover { transform: rotate(0deg) scale(1.05); z-index: 5; }
+.icon:hover svg { transform: none; }
+.icon.dragging { transform: rotate(0deg) scale(1.1); z-index: 50; cursor: grabbing; }
+.icon.dragging svg { filter: drop-shadow(8px 10px 0 var(--shadow)); }
+.icon.trash { left: auto; bottom: auto; }
+.cart-icon .label, .icon[style*="--s:150px"] .label { font-size: 18px; }
+.cart-icon svg { filter: drop-shadow(6px 6px 0 #d8cdf7); }
+.cart-icon:hover { transform: rotate(-2deg) translateY(-6px) scale(1.04); }
+.phone-icon { animation: buzz 3.2s steps(2) infinite; }
+.phone-icon:hover { animation: none; }
+@keyframes buzz { 0%, 86%, 100% { transform: rotate(var(--r)); } 89% { transform: rotate(calc(var(--r) - 6deg)); } 92% { transform: rotate(calc(var(--r) + 6deg)); } 95% { transform: rotate(calc(var(--r) - 4deg)); } }
+.badge {
+  position: absolute; top: -4px; right: -6px; min-width: 24px; height: 24px; display: grid; place-items: center;
+  background: #ff3b5c; color: #fff; font-family: "Silkscreen", monospace; font-size: 13px;
+  box-shadow: 0 0 0 3px var(--line);
+}
+
+/* about me */
+.about { max-width: none; }
+.about-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.about-head svg { width: 48px; height: 48px; flex: none; }
+.about-head h3 { margin: 0; font-size: 24px; }
+.about p { font-size: 16px; }
+.inline-link { font-weight: 600; color: #ff7a2f; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+
+/* phone DM */
+.win#win-phone .win-body { padding: 0; }
+.dm { display: flex; flex-direction: column; height: min(560px, calc(100vh - 140px)); background: #fff; }
+.dm-head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 3px solid var(--line); background: var(--soft); }
+.dm-ava svg { width: 36px; height: 36px; display: block; background: #fff; box-shadow: 0 0 0 2px var(--line); }
+.dm-head b { font-size: 17px; }
+.dm-status { font-size: 12px; opacity: .7; display: flex; align-items: center; gap: 5px; }
+.dm-status i { width: 8px; height: 8px; background: #3ddc84; display: inline-block; }
+.dm-log {
+  flex: 1; overflow-y: auto; padding: 14px 12px; display: flex; flex-direction: column; gap: 8px;
+  background: repeating-linear-gradient(0deg, #fff 0 22px, #fbf6ff 22px 44px);
+}
+.dm-b { max-width: 78%; padding: 7px 11px; font-size: 15px; line-height: 1.35; animation: pop .15s steps(2); word-wrap: break-word; user-select: text; }
+.dm-b.them { align-self: flex-start; background: #eee7f2; box-shadow: 0 0 0 2px var(--line); }
+.dm-b.me { align-self: flex-end; background: var(--accent); color: #fff; box-shadow: 0 0 0 2px var(--line); }
+.dm-b a { color: inherit; }
+.dots3 { display: inline-flex; gap: 4px; }
+.dots3 i { width: 6px; height: 6px; background: var(--ink); animation: blink .9s steps(2) infinite; }
+.dots3 i:nth-child(2) { animation-delay: .3s; } .dots3 i:nth-child(3) { animation-delay: .6s; }
+.dm-form { border-top: 3px solid var(--line); padding: 10px; display: grid; gap: 8px; background: var(--paper); }
+.dm-form input, .dm-form textarea {
+  font: inherit; font-size: 15px; color: var(--ink); background: #fff; border: 0; outline: 0;
+  padding: 7px 9px; box-shadow: 0 0 0 2px var(--line); resize: none; user-select: text; cursor: text;
+}
+.dm-form input:focus, .dm-form textarea:focus { box-shadow: 0 0 0 2px var(--line), 0 0 0 5px var(--soft); }
+.dm-row { display: flex; gap: 8px; align-items: stretch; }
+.dm-row textarea { flex: 1; }
+.dm-send { font-size: 18px; padding: 0 12px; }
+.shake { animation: shake .3s steps(3); }
+@keyframes shake { 33% { transform: translateX(-5px); } 66% { transform: translateX(5px); } }
+
+@media (max-width: 720px) {
+  #icons { position: absolute; inset: 12px 8px auto; display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 4px; }
+  .icon { position: relative; left: auto !important; top: auto !important; }
+  .icon svg { width: calc(var(--s) * .55); height: calc(var(--s) * .55); }
+  .phone-icon .badge { top: -2px; right: 0; }
+  #stickers { top: 330px; }
+}

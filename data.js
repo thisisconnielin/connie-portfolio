@@ -5,11 +5,23 @@
 window.PORTFOLIO = {
   owner: "Connie",
   role: "GTM for startups",
+  // about me window; **word** = bold, **Belo** opens the Belo app
+  aboutTitle: "Hi, I'm Connie! ♡",
   about: [
-    "Hi! I'm Connie ✿",
-    "I do GTM for startups: launch films, ads, social and the product videos that make people get it in 5 seconds.",
-    "I make them with AI video (Seedance, Kling), code-driven motion (HyperFrames) and hand-tuned sound. And I vibe-code my own apps, too.",
+    "I'm a UCLA grad with a background in Statistics & Data Science, currently based in San Francisco and working in GTM, where I get to mix creativity, strategy, and a little bit of everything.",
+    "I'm a people person at heart. I love meeting new people, spontaneous hangouts, exploring new places, and finding little pockets of community wherever I go.",
+    "Outside of work, I'm probably traveling somewhere, taking way too many photos, trying a new restaurant, or stopping to pet every cat I see. I love good food, good company, and collecting little moments along the way. 🐈",
+    "I'm also building **Belo**, a project inspired by something I genuinely care about: making it easier for people to find their people, make plans, and turn online connections into real-life experiences.",
+    "I love bringing people and ideas together, whether that's through technology, community, or a spontaneous dinner plan.",
+    "Always down for a coffee, a food adventure, a spontaneous trip, or meeting a new cat. :)",
   ],
+  // the phone on the desktop: messages are sent to this inbox via formsubmit.co (no backend)
+  phone: {
+    title: "DM for collabs",
+    status: "usually replies within a day",
+    greeting: ["hiii 👋", "DM me for collabs, launches, GTM help, or just a coffee chat ☕", "leave your email so I can write back ♡"],
+    sent: "got it! it's in my inbox now ♡ talk soon",
+  },
   email: "conniew0319@gmail.com",
   // sticker colors/glyphs are drawn in app.js, keyed by id
   socials: [

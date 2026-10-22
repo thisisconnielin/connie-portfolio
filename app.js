@@ -157,6 +157,13 @@
   const base = { L: INK, W: "#ffffff", G: "#c9b8c9", P: "#ff9fc0", R: "#ff5d8f" };
   const cartPal = { L: INK, G: "#cfc6f2", O: "#ff8a3d", W: "#fff3e0", P: "#ff9fc0", Y: "#ffd36b" };
   const printerPal = { L: INK, W: "#ffffff", G: "#c9b8c9", P: "#bfe6ff", D: "#8fc8ee", K: "#4fd18b", R: "#ff9fc0" };
+  const phonePal = { L: INK, D: "#ffb3cf", S: "#eef8ff", B: "#c9b8c9", P: "#ff7aa8" };
+  const PHONE = [
+    "LLLLLLLLLLLL", "LDDDDDDDDDDL", "LDDDLLLLDDDL", "LDSSSSSSSSDL", "LDSBBBBSSSDL",
+    "LDSBBBBBSSDL", "LDSSSSSSSSDL", "LDSSSPPPPSDL", "LDSSPPPPPSDL", "LDSSSSSSSSDL",
+    "LDSBBBSSSSDL", "LDSSSSSSSSDL", "LDSSSSSSSSDL", "LDDDDDDDDDDL", "LDDDDLLDDDDL",
+    "LDDDDDDDDDDL", "LLLLLLLLLLLL",
+  ];
   const CAMERA = [
     ".LLLLLLLL.", "L........L", "L..LLLL.LL", "L.L....L.L", "L.L....L.L",
     "L.L....L.L", "L..LLLL..L", "L........L", ".LLLLLLLL.",
@@ -214,6 +221,9 @@
       for (let t = 0; t < secs; t += 0.32) tone(110, 0.2, { at: t, type: "sawtooth", vol: 0.015 });
       seq([1318, 1760], 0.08, { type: "triangle", vol: 0.08, at: secs });
     },
+    key: () => tone(1800 + Math.random() * 600, 0.015, { vol: 0.02, type: "triangle" }),
+    send: () => { noise(0.12, { freq: 1200, q: 0.6, vol: 0.06 }); tone(523, 0.12, { type: "triangle", to: 1568, vol: 0.07 }); },
+    ding: () => seq([1568, 2093], 0.06, { type: "sine", vol: 0.07 }),
     peel: () => { noise(0.16, { freq: 3500, q: 0.7, vol: 0.09 }); tone(523, 0.08, { type: "triangle", to: 1046, vol: 0.06, at: 0.12 }); },
     insert: () => { noise(0.05, { freq: 600, vol: 0.12 }); tone(196, 0.06, { at: 0.06 }); seq([392, 523, 784], 0.07, { type: "triangle", vol: 0.08, at: 0.2 }); },
   };
@@ -418,35 +428,75 @@
     `<a class="btn" href="${esc(s.url)}" target="_blank" rel="noopener">${STICKER_NAME[s.id]} ${esc(s.label)}</a>`).join("")}</div>`;
   const total = P.folders.reduce((n, f) => n + f.groups.reduce((m, g) => m + g.items.length, 0), 0);
   const openers = {
-    about: () => textWin("about", "about_me.txt",
-      P.about.map((p) => `<p>${esc(p)}</p>`).join("") +
-      `<p class="folder-meta">${total} videos · ${P.folders.length} startups · ${P.apps.length} app shipped</p>` + socialBtns()),
-    contact: () => textWin("contact", "say_hi.mail",
-      `<p>Launching something? I'd love to help it land.</p>
-       <p><a class="btn" href="mailto:${esc(P.email)}">✉ ${esc(P.email)}</a></p>` + socialBtns(), 440),
+    about: () => {
+      const md = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, (_, w) => w === "Belo" ? `<button class="inline-link" data-app="belo">Belo</button>` : `<b>${w}</b>`);
+      const body = h(`<div class="txt about">
+        <div class="about-head">${sprite(CAT(false), base)}<h3>${esc(P.aboutTitle)}</h3></div>
+        ${P.about.map((p) => `<p>${md(p)}</p>`).join("")}
+        <p class="folder-meta">${total} videos · ${P.folders.length} startups · 1 app in the works</p>${socialBtns()}</div>`);
+      body.querySelectorAll("[data-app]").forEach((b) => b.addEventListener("click", () => { sfx.insert(); openApp(P.apps.find((a) => a.id === b.dataset.app)); }));
+      openWindow({ id: "about", title: "about me", width: 520, body });
+    },
+    contact: () => openPhone(),
     trash: () => { sfx.nope(); textWin("trash", "Trash", `<p>Trash is empty.</p><p>I don't throw drafts away. I re-cut them ♥</p>`, 360); },
-    apps: () => openCartridge(),
+    belo: () => { sfx.insert(); openApp(P.apps[0]); },
     resume: () => openResume(),
   };
 
-  /* ================= vibe-coded cartridge ================= */
-  function openCartridge() {
-    sfx.insert();
-    const body = h(`<div class="cart">
-      <div class="cart-top">${sprite(CART, cartPal)}<div><b>vibe_coded</b><div class="folder-meta">apps I designed, built & shipped myself</div></div></div>
-      <div class="homescreen"></div>
+  /* ================= phone: DM me ================= */
+  // messages go to the inbox through formsubmit.co (first send triggers a one-time activation email)
+  const FORM_URL = `https://formsubmit.co/ajax/${P.email}`;
+  function openPhone() {
+    const c = P.phone;
+    const body = h(`<div class="dm">
+      <div class="dm-head"><span class="dm-ava">${sprite(CAT(false), base)}</span>
+        <div><b>${esc(c.title)}</b><div class="dm-status"><i></i>${esc(c.status)}</div></div></div>
+      <div class="dm-log" aria-live="polite"></div>
+      <form class="dm-form">
+        <input class="dm-email" type="email" required placeholder="your email (so I can reply)" autocomplete="email">
+        <div class="dm-row">
+          <textarea class="dm-msg" required rows="2" placeholder="type a message…"></textarea>
+          <button class="btn hot dm-send" type="submit" aria-label="send">➤</button>
+        </div>
+      </form>
     </div>`);
-    const home = $(".homescreen", body);
-    P.apps.forEach((app) => {
-      const b = h(`<button class="app-icon"><img alt="" src="${app.icon}"><span>${esc(app.name)}</span></button>`);
-      b.addEventListener("pointerenter", hoverSfx);
-      b.addEventListener("click", () => { sfx.click(); openApp(app); });
-      home.append(b);
+    const log = $(".dm-log", body), form = $(".dm-form", body), msg = $(".dm-msg", body), email = $(".dm-email", body);
+    const bubble = (text, who, html) => {
+      const b = h(`<div class="dm-b ${who}"></div>`);
+      html ? (b.innerHTML = text) : (b.textContent = text);
+      log.append(b); log.scrollTop = log.scrollHeight; return b;
+    };
+    const typing = () => bubble(`<span class="dots3"><i></i><i></i><i></i></span>`, "them", true);
+    // greeting arrives one bubble at a time
+    c.greeting.forEach((t, k) => setTimeout(() => { k && sfx.ding(); bubble(t, "them"); }, 350 + k * 650));
+    [msg, email].forEach((el) => el.addEventListener("keydown", (e) => {
+      if (e.key.length === 1) sfx.key();
+      if (e.key === "Enter" && el === msg && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+    }));
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = msg.value.trim();
+      if (!text) return;
+      if (!email.checkValidity()) { sfx.nope(); email.focus(); email.classList.add("shake"); setTimeout(() => email.classList.remove("shake"), 400); return; }
+      sfx.send(); bubble(text, "me"); msg.value = "";
+      const t = typing();
+      let ok = false;
+      try {
+        const r = await fetch(FORM_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({ email: email.value, message: text, _subject: "New DM from your portfolio ✿", _template: "box" }),
+        });
+        ok = r.ok;
+      } catch { ok = false; }
+      setTimeout(() => {
+        t.remove(); sfx.ding();
+        if (ok) bubble(c.sent, "them");
+        else bubble(`hmm, the signal dropped 📵 email me at <a href="mailto:${esc(P.email)}">${esc(P.email)}</a>`, "them", true);
+      }, 700);
     });
-    const self = h(`<button class="app-icon"><span class="self">${sprite(HEART, base)}</span><span>ConnieOS</span></button>`);
-    self.addEventListener("click", () => { sfx.meow(); self.classList.remove("wiggle"); void self.offsetWidth; self.classList.add("wiggle"); say("you're already in it :3"); });
-    home.append(self, h(`<div class="app-icon soon"><span class="slot">+</span><span>loading…</span></div>`));
-    openWindow({ id: "apps", title: "vibe_coded.cart", width: 440, body });
+    openWindow({ id: "phone", title: "messages", width: 340, body });
+    setTimeout(() => email.focus(), 250);
   }
 
   function openApp(app) {
@@ -532,37 +582,57 @@
     stickerWrap.append(a);
   });
 
-  /* ================= desktop icons ================= */
+  /* ================= desktop objects ================= */
+  // scattered on purpose: each object has its own size (px), spot (% of desktop) and tilt
   const icons = [
-    ...P.folders.map((f) => ({ label: f.name, svg: folderIcon(f.color), open: () => openFolder(f) })),
-    { label: "vibe_coded", svg: sprite(CART, cartPal), open: openers.apps, cls: "cart-icon" },
-    { label: "resume", svg: sprite(PRINTER, printerPal), open: openers.resume },
-    { label: "about_me.txt", svg: sprite(TXT, base), open: openers.about },
-    { label: "say_hi.mail", svg: sprite(MAIL, base), open: openers.contact },
-    { label: "Trash", svg: sprite(TRASH, base), open: openers.trash, cls: "trash" },
-  ];
+    { id: "hellyeah", size: 92, x: 3, y: 4, r: -4 },
+    { id: "teamily", size: 70, x: 12, y: 21, r: 5 },
+    { id: "traceroot", size: 62, x: 4, y: 36, r: -2 },
+    { id: "belo", label: "Belo", svg: sprite(CART, cartPal), open: openers.belo, size: 200, x: 26, y: 16, r: -6, cls: "cart-icon" },
+    { id: "resume", label: "resume", svg: sprite(PRINTER, printerPal), open: openers.resume, size: 150, x: 9, y: 56, r: 3 },
+    { id: "phone", label: "say hi", svg: sprite(PHONE, phonePal), open: openers.contact, size: 128, x: 56, y: 30, r: 7, cls: "phone-icon" },
+    { id: "trash", label: "Trash", svg: sprite(TRASH, base), open: openers.trash, size: 44, x: 2, y: 86, r: 0 },
+  ].map((ic) => {
+    const f = P.folders.find((f) => f.id === ic.id);
+    return f ? { ...ic, label: f.name, svg: folderIcon(f.color), open: () => openFolder(f) } : ic;
+  });
   const iconWrap = $("#icons");
   icons.forEach((ic) => {
-    const el = h(`<button class="icon ${ic.cls || ""}">${ic.svg}<span class="label"></span></button>`);
+    const el = h(`<button class="icon ${ic.cls || ""}" style="--s:${ic.size}px;--r:${ic.r}deg;left:${ic.x}%;top:${ic.y}%">${ic.svg}<span class="label"></span></button>`);
     $(".label", el).textContent = ic.label;
+    if (ic.id === "phone") el.append(h(`<span class="badge">1</span>`));
     el.addEventListener("pointerenter", hoverSfx);
-    // mouse: click selects, double-click opens. touch: tap opens.
-    el.addEventListener("pointerup", (e) => {
-      if (e.pointerType !== "mouse") { ic.open(); return; }
-      document.querySelectorAll(".icon.selected").forEach((o) => o.classList.remove("selected"));
-      el.classList.add("selected"); sfx.select();
+    // click opens; press-and-move drags the object somewhere else
+    el.addEventListener("pointerdown", (e) => {
+      if (isMobile()) return;
+      const sx = e.clientX, sy = e.clientY, ox = el.offsetLeft, oy = el.offsetTop;
+      let moved = false;
+      el.setPointerCapture(e.pointerId);
+      const move = (ev) => {
+        if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 5) return;
+        if (!moved) { moved = true; el.classList.add("dragging"); sfx.select(); }
+        el.style.left = ox + ev.clientX - sx + "px";
+        el.style.top = oy + ev.clientY - sy + "px";
+      };
+      const up = () => {
+        el.removeEventListener("pointermove", move); el.removeEventListener("pointerup", up);
+        el.classList.remove("dragging");
+        if (moved) { el.dataset.dragged = "1"; tone(330, 0.05, { vol: 0.04 }); }
+      };
+      el.addEventListener("pointermove", move);
+      el.addEventListener("pointerup", up);
     });
-    el.addEventListener("dblclick", () => ic.open());
-    el.addEventListener("keydown", (e) => e.key === "Enter" && ic.open());
-    (ic.cls === "trash" ? $("#desktop") : iconWrap).append(el);
-  });
-  $("#desktop").addEventListener("pointerdown", (e) => {
-    if (!e.target.closest(".icon")) document.querySelectorAll(".icon.selected").forEach((o) => o.classList.remove("selected"));
+    el.addEventListener("click", () => {
+      if (el.dataset.dragged) { delete el.dataset.dragged; return; }
+      if (ic.id === "phone") el.querySelector(".badge")?.remove();
+      ic.open();
+    });
+    iconWrap.append(el);
   });
 
   /* ================= pet cat ================= */
   const pet = $("#pet");
-  const lines = ["meow!", "nice cut ✿", "try the printer →", "*purr*", "peel a sticker!", "hi :3", "she made an app too"];
+  const lines = ["meow!", "nice cut ✿", "try the printer!", "*purr*", "peel a sticker!", "hi :3", "text her on the phone ♡", "you can drag stuff around"];
   function say(text) {
     document.querySelector(".bubble")?.remove();
     const b = h(`<div class="bubble pixel"></div>`);

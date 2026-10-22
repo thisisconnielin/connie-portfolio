@@ -178,8 +178,33 @@
   document.documentElement.style.setProperty("--pointer", cur(HAND, { ...base, W: "#ffe3ee" }, 6, 0, "pointer"));
 
   /* ================= sound (WebAudio, no files) ================= */
-  let ac = null, soundOn = localStorage.getItem("sound") !== "off";
-  const audio = () => (ac ||= new (window.AudioContext || window.webkitAudioContext)());
+  // mute choice only lasts for this visit, so nobody gets stuck on "off"
+  let ac = null, master = null, soundOn = sessionStorage.getItem("sound") !== "off";
+  function audio() {
+    if (!ac) {
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      // everything goes through one louder bus with a limiter so stacked blips don't clip
+      const comp = ac.createDynamicsCompressor();
+      master = ac.createGain(); master.gain.value = 2.2;
+      master.connect(comp).connect(ac.destination);
+    }
+    return ac;
+  }
+  // iPhone: web audio is silenced by the ringer switch unless the page counts as media playback
+  const SILENT_WAV = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
+  function unlockAudio() {
+    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch {}
+    const a = audio();
+    if (a.state !== "running") a.resume();
+    if (!unlockAudio.done) {
+      unlockAudio.done = true;
+      const el = new Audio(SILENT_WAV); el.setAttribute("playsinline", ""); el.play().catch(() => {});
+      // a 1-sample buffer through the graph wakes Safari's output
+      const b = a.createBufferSource(); b.buffer = a.createBuffer(1, 1, 22050); b.connect(master); b.start(0);
+    }
+  }
+  // browsers can suspend audio (tab switch, phone call); wake it on the next touch or click
+  addEventListener("pointerdown", () => ac && ac.state !== "running" && unlockAudio(), true);
   function tone(freq, dur = 0.06, { type = "square", vol = 0.06, to = null, at = 0 } = {}) {
     if (!soundOn) return;
     const a = audio(), t = a.currentTime + at;
@@ -189,7 +214,7 @@
     if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);
     g.gain.setValueAtTime(vol, t);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g).connect(a.destination);
+    o.connect(g).connect(master);
     o.start(t); o.stop(t + dur + 0.02);
   }
   const seq = (notes, step, opts = {}) => notes.forEach((f, i) => tone(f, step * 1.3, { ...opts, at: (opts.at || 0) + i * step }));
@@ -202,7 +227,7 @@
     const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
     s.buffer = buf; f.type = "bandpass"; f.frequency.value = freq; f.Q.value = q;
     g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    s.connect(f).connect(g).connect(a.destination); s.start(t);
+    s.connect(f).connect(g).connect(master); s.start(t);
   }
   const sfx = {
     click: () => tone(660, 0.05, { to: 990 }),
@@ -233,7 +258,7 @@
   const soundBtn = $("#soundToggle");
   const paintSound = () => (soundBtn.textContent = soundOn ? "♪ on" : "♪ off");
   soundBtn.addEventListener("click", () => {
-    soundOn = !soundOn; localStorage.setItem("sound", soundOn ? "on" : "off"); paintSound(); sfx.click();
+    soundOn = !soundOn; sessionStorage.setItem("sound", soundOn ? "on" : "off"); if (soundOn) unlockAudio(); paintSound(); sfx.click();
   });
   paintSound();
 
@@ -248,7 +273,7 @@
     if (pct >= 100) { clearInterval(tick); $("#bootStart").hidden = false; }
   }, 90);
   $("#bootStart").addEventListener("click", () => {
-    audio().resume(); sfx.boot();
+    unlockAudio(); sfx.boot();
     $("#boot").classList.add("gone");
     setTimeout(() => $("#boot").remove(), 400);
   });

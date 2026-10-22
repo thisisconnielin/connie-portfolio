@@ -10,7 +10,7 @@ window.PORTFOLIO = {
     "I do GTM for startups: launch films, ads, social and the product videos that make people get it in 5 seconds.",
     "I make them with AI video (Seedance, Kling), code-driven motion (HyperFrames) and hand-tuned sound. And I vibe-code my own apps, too.",
   ],
-  email: "lwqconnie@g.ucla.edu",
+  email: "conniew0319@gmail.com",
   // sticker colors/glyphs are drawn in app.js, keyed by id
   socials: [
     { id: "x", label: "@lwqconnie", url: "https://x.com/lwqconnie" },

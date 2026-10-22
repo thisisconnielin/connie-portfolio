@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ConnieOS — portfolio</title>
+  <meta name="description" content="Connie's video portfolio: launch films, ads and product videos for Hellyeah, Teamily and TraceRoot." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Silkscreen&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><rect x='1' y='3' width='6' height='2' fill='%23ffb84d'/><rect x='1' y='5' width='14' height='9' fill='%23ffcf6b'/></svg>" />
+</head>
+<body>
+  <!-- boot screen: also unlocks audio on first click -->
+  <div id="boot">
+    <div class="boot-inner">
+      <div class="boot-logo" id="bootLogo"></div>
+      <div class="boot-title">ConnieOS</div>
+      <div class="boot-bar"><span id="bootFill"></span></div>
+      <button class="btn boot-start" id="bootStart" hidden>▶ click to start</button>
+    </div>
+  </div>
+
+  <header class="menubar">
+    <div class="menu-left">
+      <span class="menu-logo" id="menuLogo"></span>
+      <b>ConnieOS</b>
+      <button class="menu-item" data-open="about">About</button>
+      <button class="menu-item" data-open="contact">Contact</button>
+    </div>
+    <div class="menu-right">
+      <button class="menu-item" id="soundToggle" title="Sound on/off">♪ on</button>
+      <span id="clock"></span>
+    </div>
+  </header>
+
+  <main id="desktop">
+    <div id="icons"></div>
+    <div class="hello">
+      <div class="hello-hi">hi, i'm <span id="ownerName"></span> ✿</div>
+      <div class="hello-sub" id="ownerRole"></div>
+      <div class="hello-tip">double-click a folder to look around</div>
+    </div>
+    <button id="pet" title="pet me"></button>
+  </main>
+
+  <div id="windows"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

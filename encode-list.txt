@@ -1,0 +1,33 @@
+hellyeah/brand-film|hellyeah branding video/Hellyeah_BrandFilm_v7.mp4
+hellyeah/launch-film-60s|hellyeah branding video/Hellyeah_Launch_newest.mp4
+hellyeah/launch-and-grow|hellyeah branding video/hellyeah branding Oct 8.mp4
+hellyeah/2am-agent|hellyeah branding video/Hellyeah_2AM_Agent_59s_1080p.mp4
+hellyeah/born-for-this|hellyeah branding video/hellyeah sperm/Hellyeah_BornForThis.mp4
+hellyeah/born-for-this-pinball|hellyeah branding video/hellyeah sperm/Hellyeah_BornForThis_Pinball_claudefinal.mp4
+hellyeah/this-is-the-shift|hellyeah branding video/swtich_workflow/version 2/Hellyeah_ThisIsTheShift_51s_fast_16x9.mp4
+hellyeah/the-switch|hellyeah branding video/swtich_workflow/version 3/Hellyeah_Switch_16x9.mp4
+hellyeah/performance-max-reel|hellyeah branding video/OpenEdit/Hellyeah_Launch_Film_v5_1080p60.mp4
+hellyeah/we-do-the-rest|hellyeah branding video/tester/Hellyeah_WeDoTheRest_v3.mp4
+hellyeah/what-if-we-never-met|hellyeah branding video/we_do_it_all/we_do_it_all_hellyeah_ads(done).mp4
+hellyeah/fast-cut|hellyeah branding video/Hellyeah_FastCut_32s_9x16.mp4
+hellyeah/game-has-changed|hellyeah branding video/UEBS/finished/Hellyeah_UEBS_GameHasChanged_Marvel_33s_16x9_agencies.mp4
+hellyeah/its-how-you-use-it|hellyeah branding video/Commercial ads/Hellyeah_Its_How_You_Use_It_22s_v3.mp4
+hellyeah/budget-vampires|hellyeah branding video/Commercial ads/Hellyeah_Budget_Vampires_Flat_19s_16x9_v4.mp4
+hellyeah/what-went-wrong|hellyeah branding video/Commercial ads/Hellyeah_WhatWentWrong_42s_16x9_fast_v2.mp4
+hellyeah/while-you-slept|hellyeah branding video/Commercial ads/Hellyeah_While_You_Slept_v2_Fast_16s_16x9_1080p.mp4
+hellyeah/moms-fridge-pixel|hellyeah branding video/Vibe coder/Hellyeah_Moms_Fridge_Pixel_28s_1080p.mp4
+hellyeah/fridge-to-feed|hellyeah branding video/Vibe coder/Hellyeah_From_The_Fridge_To_The_Feed_30s_1080p.mp4
+hellyeah/agency-switch|hellyeah branding video/swtich_workflow/Hellyeah_SwitchWorkflow_30s_16x9.mp4
+hellyeah/meet-hellyeah-ai-ads|hellyeah branding video/hellyeah sperm/edit one/Hellyeah_AI_Ads_Final.mp4
+hellyeah/website-demo|hellyeah branding video/hellyeah website demo.mp4
+hellyeah/launch-demo-1-0|hellyeah branding video/1.0 demo video/launch demo vid final edit/Launch demo final edit.mp4
+hellyeah/ooo-techno-recap|hellyeah branding video/OOO Hellyeah DJ event/final/OOO_Techno_Sound_Recap_v2_1080p.mp4
+teamily/choose-your-squad|Teamily videos/creative showcase/Teamily_character-select_16x9_draft2.mp4
+teamily/tetris-week|Teamily videos/creative showcase/Teamily_tetris-week_16x9_v1.mp4
+teamily/agents-arguing|Teamily videos/usecase/Teamily_AgentsArguing_9x16.mp4
+teamily/group-chat|Teamily videos/usecase/Teamily_GroupChat_A_16x9_draft.mp4
+teamily/launch-squad|Teamily videos/usecase/Teamily_LaunchSquad_16x9.mp4
+teamily/agents-fighting|Teamily videos/usecase/Teamily_AgentsFighting_25s_16x9_v1.mp4
+teamily/work-with-teamily|Teamily videos/usecase/Teamily_WorkWithTeamily_v4_16x9.mp4
+traceroot/introducing-traceroot|traceroot/TraceRoot_Introducing_v4_16x9.mp4
+traceroot/traceroot-showcase|traceroot/TraceRoot_Showcase_34s_16x9.mp4

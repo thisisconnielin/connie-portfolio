@@ -229,3 +229,122 @@ a { color: inherit; cursor: var(--pointer); }
   .menu-left, .menu-right { gap: 8px; }
   .menu-left b { display: none; }
 }
+
+/* ---------- vibe-coded cartridge ---------- */
+.cart-icon svg { filter: drop-shadow(3px 3px 0 #d8cdf7); }
+.cart-icon:hover svg { transform: translateY(-3px) rotate(-4deg); }
+.cart-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; font-size: 16px; }
+.cart-top svg { width: 44px; height: 44px; flex: none; }
+.homescreen {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 18px;
+  background: repeating-linear-gradient(45deg, #f3eeff 0 8px, #ebe4ff 8px 16px);
+  box-shadow: 0 0 0 3px var(--line);
+}
+.app-icon { display: grid; justify-items: center; gap: 6px; font-size: 14px; }
+.app-icon img, .app-icon .self, .app-icon .slot {
+  width: 64px; height: 64px; display: grid; place-items: center;
+  box-shadow: 0 0 0 3px var(--line), 4px 4px 0 3px var(--shadow);
+  background: var(--paper);
+}
+.app-icon img { image-rendering: auto; }
+.app-icon .self svg { width: 44px; height: 44px; }
+.app-icon:hover img, .app-icon:hover .self { transform: translateY(-3px); }
+.app-icon.soon { opacity: .5; }
+.app-icon .slot { background: none; box-shadow: none; outline: 3px dashed var(--line); outline-offset: -3px; font-family: "Silkscreen", monospace; font-size: 22px; }
+.wiggle { animation: wiggle .4s steps(4); }
+@keyframes wiggle { 25% { transform: rotate(-8deg); } 75% { transform: rotate(8deg); } }
+
+/* app window */
+.app { display: grid; grid-template-columns: 200px 1fr; gap: 22px; align-items: start; }
+.phone {
+  position: relative; padding: 14px 8px 10px; background: var(--ink);
+  box-shadow: 0 0 0 3px var(--line), 5px 5px 0 3px var(--shadow);
+}
+.notch { width: 54px; height: 8px; margin: 0 auto 8px; background: #000; }
+.phone-screen { position: relative; aspect-ratio: 390 / 844; overflow: hidden; background: #fff6ef; cursor: var(--pointer); }
+.phone-screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .25s steps(3); }
+.phone-screen img.on { opacity: 1; }
+.dots { display: flex; justify-content: center; gap: 6px; margin-top: 9px; }
+.dots button { width: 9px; height: 9px; background: #6b5670; }
+.dots button.on { background: #ff8a3d; }
+.app-head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+.app-head img { width: 56px; height: 56px; box-shadow: 0 0 0 3px var(--line); }
+.app-head h3 { margin: 0; font-size: 24px; }
+.tag-line { margin: 0; color: #ff7a2f; font-weight: 600; }
+.app-info p { margin: 0 0 10px; font-size: 15px; line-height: 1.4; }
+.app-info .built { font-size: 14px; opacity: .75; }
+.steps { list-style: none; padding: 0; margin: 0 0 12px; display: flex; flex-wrap: wrap; gap: 6px; counter-reset: s; font-size: 13px; }
+.steps li { counter-increment: s; background: #fff0e4; padding: 2px 8px; box-shadow: 0 0 0 2px var(--line); }
+.steps li::before { content: counter(s) " "; font-family: "Silkscreen", monospace; color: #ff7a2f; }
+.btn.hot { background: #ffd8bf; }
+.btn.hot:hover { background: #ffc29b; }
+.links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.links a { text-decoration: none; }
+
+/* ---------- resume printer ---------- */
+.printer-wrap { display: grid; justify-items: center; }
+.printer { position: relative; z-index: 2; }
+.printer svg { width: 176px; height: 132px; display: block; }
+.printer.busy svg { animation: rattle .09s steps(2) infinite; }
+@keyframes rattle { 50% { transform: translate(1px, -1px); } }
+.paper-slot { width: 100%; display: grid; justify-items: center; margin-top: -26px; overflow: hidden; }
+.paper {
+  width: min(400px, 100%); max-height: 0; overflow: hidden;
+  background:
+    radial-gradient(circle at 9px 12px, var(--paper) 0 3px, transparent 4px) 0 0 / 18px 24px repeat-y,
+    radial-gradient(circle at 9px 12px, var(--paper) 0 3px, transparent 4px) 100% 0 / 18px 24px repeat-y,
+    repeating-linear-gradient(180deg, #ffffff 0 24px, #eef7ff 24px 48px);
+  box-shadow: inset 3px 0 0 var(--line), inset -3px 0 0 var(--line), inset 0 -3px 0 var(--line);
+}
+.paper::before { content: ""; display: block; height: 30px; }
+.paper.printing { animation: feed var(--secs, 1.8s) steps(18) forwards; }
+@keyframes feed { to { max-height: 1200px; } }
+.paper-in { padding: 0 32px 22px; }
+.r-name { font-family: "Silkscreen", monospace; font-size: 22px; text-align: center; }
+.r-head { text-align: center; color: #ff5d8f; font-weight: 600; font-size: 17px; margin-top: 4px; }
+.r-school { text-align: center; font-size: 13px; opacity: .7; margin-top: 2px; }
+.r-sec { font-family: "Silkscreen", monospace; font-size: 12px; margin: 14px 0 4px; background: var(--ink); color: var(--paper); display: inline-block; padding: 0 6px; }
+.paper ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.4; }
+.paper li { margin-bottom: 3px; }
+.r-cut { margin-top: 16px; font-size: 12px; opacity: .45; white-space: nowrap; overflow: hidden; }
+.paper .links { margin-top: 10px; }
+
+/* ---------- social stickers ---------- */
+#stickers {
+  position: absolute; right: 48px; top: 40px; width: 360px;
+  display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 16px 14px;
+}
+.sticker {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px 6px 6px; text-decoration: none; font-size: 15px;
+  background: #fff; transform: rotate(var(--r));
+  box-shadow: 0 0 0 4px #fff, 0 0 0 7px var(--line), 6px 7px 0 7px rgba(59,42,63,.18);
+  transition: transform .12s steps(2);
+}
+.sticker:hover { transform: rotate(0deg) translateY(-4px) scale(1.06); }
+.sticker:active { transform: rotate(calc(var(--r) * -2)) translateY(-10px) scale(1.1); }
+.s-badge {
+  min-width: 30px; height: 30px; padding: 0 5px; display: grid; place-items: center;
+  font-family: "Silkscreen", monospace; font-size: 15px; color: #fff;
+}
+.s-badge svg { width: 22px; height: 20px; }
+.s-x .s-badge { background: #111; }
+.s-xhs .s-badge { background: #ff2442; font-family: system-ui, sans-serif; font-weight: 700; font-size: 12px; }
+.s-ig .s-badge { background: linear-gradient(135deg, #feda75, #fa7e1e 30%, #d62976 60%, #962fbf 80%, #4f5bd5); }
+.s-in .s-badge { background: #0a66c2; text-transform: lowercase; }
+
+@media (max-width: 720px) {
+  #stickers { top: auto; bottom: 190px; left: 16px; right: 16px; width: auto; justify-content: center; }
+  .hello { bottom: 110px; }
+  .app { grid-template-columns: 1fr; }
+  .phone { width: 190px; justify-self: center; }
+}
+
+/* trash lives in the bottom-left corner like a real desktop */
+.icon.trash { position: absolute; left: 20px; bottom: 20px; }
+#icons { bottom: 130px; gap: 6px 10px; }
+.s-in .s-badge { font-family: system-ui, sans-serif; font-weight: 800; font-size: 17px; }
+@media (max-width: 720px) {
+  #icons { bottom: auto; }
+  #stickers { top: 290px; bottom: auto; }
+}

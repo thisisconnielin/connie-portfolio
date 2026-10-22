@@ -4,15 +4,54 @@
 
 window.PORTFOLIO = {
   owner: "Connie",
-  role: "AI video & motion designer",
+  role: "GTM for startups",
   about: [
     "Hi! I'm Connie ✿",
-    "I make launch films, ads and product videos for AI startups — mixing AI video (Seedance, Kling), code-driven motion (HyperFrames) and hand-tuned sound.",
-    "Everything here was made in 2026 for Hellyeah, Teamily and TraceRoot.",
+    "I do GTM for startups: launch films, ads, social and the product videos that make people get it in 5 seconds.",
+    "I make them with AI video (Seedance, Kling), code-driven motion (HyperFrames) and hand-tuned sound. And I vibe-code my own apps, too.",
   ],
-  links: [
-    { label: "GitHub", url: "https://github.com/" },
-    { label: "Email", url: "mailto:hello@example.com" },
+  email: "lwqconnie@g.ucla.edu",
+  // sticker colors/glyphs are drawn in app.js, keyed by id
+  socials: [
+    { id: "x", label: "@lwqconnie", url: "https://x.com/lwqconnie" },
+    { id: "xhs", label: "@carinabonbon", url: "https://www.xiaohongshu.com/search_result?keyword=carinabonbon" },
+    { id: "ig", label: "@lwqconnie", url: "https://www.instagram.com/lwqconnie" },
+    { id: "in", label: "Connie Lin", url: "https://www.linkedin.com/in/connie-lin-174b2b263" },
+  ],
+
+  // printed by the printer on the desktop
+  resume: {
+    pdf: "media/connie-lin-resume.pdf",
+    name: "Connie (Wenqi) Lin",
+    headline: "GTM for startups",
+    school: "UCLA · B.S. Statistics & Data Science · 2026",
+    now: [
+      "GTM & content for AI startups: Hellyeah, Teamily, TraceRoot (all the films on this desktop)",
+      "Vibe-coded Belo, a live map of plans nearby (iOS, TestFlight beta)",
+      "Founder, Kairo: product, iOS app, branding & go-to-market (2026–)",
+    ],
+    before: [
+      "Data Science Intern, Yale: epidemiological modeling in R (2023)",
+      "Data projects: enrollment demand modeling, Bayesian MCMC, experiment design",
+    ],
+    skills: ["GTM", "launch films", "AI video", "social", "Python", "SQL", "R", "A/B testing", "LLM eval", "SwiftUI", "Supabase"],
+  },
+
+  // vibe-coded apps live in their own cartridge, not a folder
+  apps: [
+    {
+      id: "belo",
+      name: "Belo",
+      icon: "media/belo/icon.png",
+      tagline: "See what's happening around you.",
+      about: "A live map of plans nearby. Land in a new neighborhood and instantly see who's hiking, grabbing coffee or heading to a show, then ask to join. Hosts approve every request, so each group is one they chose.",
+      steps: ["Find a plan nearby", "Ask to join", "Host says yes", "Meet up"],
+      built: "Designed, built and shipped solo with AI coding tools: native iOS app, backend, website and TestFlight releases.",
+      stack: ["SwiftUI", "MapKit", "Supabase", "Cloudflare Workers", "TestFlight"],
+      screens: ["media/belo/screen-1.jpg", "media/belo/screen-2.jpg", "media/belo/screen-3.jpg", "media/belo/screen-4.jpg", "media/belo/screen-5.jpg"],
+      website: "media/belo/website.jpg",
+      url: "https://belowith.com",
+    },
   ],
 
   folders: [

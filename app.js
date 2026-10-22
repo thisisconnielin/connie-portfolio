@@ -113,6 +113,37 @@
     ".LWLWWWWWLWWL...",
     ".LLLLLLLLLLL....",
   ];
+  // game cartridge for vibe-coded apps
+  const CART = [
+    "..LLLLLLLLLLLL..",
+    "..LGGGGGGGGGGL..",
+    "..LGLLLLLLLLGL..",
+    "..LGLOOOOOOLGL..",
+    "..LGLOWWWWOLGL..",
+    "..LGLOOOOOOLGL..",
+    "..LGLOWWOOOLGL..",
+    "..LGLLLLLLLLGL..",
+    "..LGGGGGGGGGGL..",
+    "..LGGGLGGLGGGL..",
+    "..LGGPGGGGPGGL..",
+    "..LGGGGGGGGGGL..",
+    "...LYLYLYLYLYL..",
+    "...LLLLLLLLLLL..",
+  ];
+  const PRINTER = [
+    "....LLLLLLLL....",
+    "....LWWWWWWL....",
+    "....LWGGGGWL....",
+    "..LLLLLLLLLLLL..",
+    ".LPPPPPPPPPPPPL.",
+    ".LPPPPPPPPPKPPL.",
+    ".LPPLPPPPLPPPPL.",
+    ".LPRPPPPPPRPPPL.",
+    ".LDDDDDDDDDDDDL.",
+    ".LDLLLLLLLLLLDL.",
+    ".LDDDDDDDDDDDDL.",
+    "..LLLLLLLLLLLL..",
+  ];
   const ARROW = [
     "L...........", "LL..........", "LWL.........", "LWWL........",
     "LWWWL.......", "LWWWWL......", "LWWWWWL.....", "LWWWWWWL....",
@@ -124,6 +155,12 @@
     ".LWWWWWWWWWL", "..LWWWWWWWL.", "...LWWWWWWL.", "...LLLLLLLL.",
   ];
   const base = { L: INK, W: "#ffffff", G: "#c9b8c9", P: "#ff9fc0", R: "#ff5d8f" };
+  const cartPal = { L: INK, G: "#cfc6f2", O: "#ff8a3d", W: "#fff3e0", P: "#ff9fc0", Y: "#ffd36b" };
+  const printerPal = { L: INK, W: "#ffffff", G: "#c9b8c9", P: "#bfe6ff", D: "#8fc8ee", K: "#4fd18b", R: "#ff9fc0" };
+  const CAMERA = [
+    ".LLLLLLLL.", "L........L", "L..LLLL.LL", "L.L....L.L", "L.L....L.L",
+    "L.L....L.L", "L..LLLL..L", "L........L", ".LLLLLLLL.",
+  ];
 
   // pixel cursors
   const cur = (rows, pal, hx, hy, fb) => {
@@ -148,7 +185,18 @@
     o.connect(g).connect(a.destination);
     o.start(t); o.stop(t + dur + 0.02);
   }
-  const seq = (notes, step, opts) => notes.forEach((f, i) => tone(f, step * 1.3, { ...opts, at: i * step }));
+  const seq = (notes, step, opts = {}) => notes.forEach((f, i) => tone(f, step * 1.3, { ...opts, at: (opts.at || 0) + i * step }));
+  // short filtered noise burst (printer head, sticker peel)
+  function noise(dur, { at = 0, freq = 2000, q = 1, vol = 0.08 } = {}) {
+    if (!soundOn) return;
+    const a = audio(), t = a.currentTime + at;
+    const buf = a.createBuffer(1, Math.ceil(a.sampleRate * dur), a.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    s.buffer = buf; f.type = "bandpass"; f.frequency.value = freq; f.Q.value = q;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f).connect(g).connect(a.destination); s.start(t);
+  }
   const sfx = {
     click: () => tone(660, 0.05, { to: 990 }),
     select: () => tone(1046, 0.035, { vol: 0.04 }),
@@ -160,6 +208,14 @@
     boot: () => seq([523, 659, 784, 1046, 1318], 0.09, { type: "triangle", vol: 0.09 }),
     meow: () => { tone(700, 0.12, { type: "triangle", to: 1150, vol: 0.09 }); tone(1150, 0.18, { type: "triangle", to: 620, vol: 0.09, at: 0.12 }); },
     nope: () => seq([220, 165], 0.08, { vol: 0.05 }),
+    // dot-matrix: rows of head chatter + a paper-feed whir, then a ding
+    print: (secs) => {
+      for (let t = 0; t < secs; t += 0.045) noise(0.03, { at: t, freq: 1800 + (t * 997 % 1) * 1600, q: 4, vol: 0.06 });
+      for (let t = 0; t < secs; t += 0.32) tone(110, 0.2, { at: t, type: "sawtooth", vol: 0.015 });
+      seq([1318, 1760], 0.08, { type: "triangle", vol: 0.08, at: secs });
+    },
+    peel: () => { noise(0.16, { freq: 3500, q: 0.7, vol: 0.09 }); tone(523, 0.08, { type: "triangle", to: 1046, vol: 0.06, at: 0.12 }); },
+    insert: () => { noise(0.05, { freq: 600, vol: 0.12 }); tone(196, 0.06, { at: 0.06 }); seq([392, 523, 784], 0.07, { type: "triangle", vol: 0.08, at: 0.2 }); },
   };
   let lastHover = 0;
   const hoverSfx = () => { const n = performance.now(); if (n - lastHover > 70) { lastHover = n; sfx.hover(); } };
@@ -358,26 +414,136 @@
     openWindow({ id, title, width, body: h(`<div class="txt">${html}</div>`) });
   }
   const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-  const linksHtml = () => `<div class="links">${P.links.map((l) => `<a class="btn" href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")}</div>`;
+  const socialBtns = () => `<div class="links">${P.socials.map((s) =>
+    `<a class="btn" href="${esc(s.url)}" target="_blank" rel="noopener">${STICKER_NAME[s.id]} ${esc(s.label)}</a>`).join("")}</div>`;
   const total = P.folders.reduce((n, f) => n + f.groups.reduce((m, g) => m + g.items.length, 0), 0);
   const openers = {
     about: () => textWin("about", "about_me.txt",
       P.about.map((p) => `<p>${esc(p)}</p>`).join("") +
-      `<p class="folder-meta">${total} videos · ${P.folders.length} clients</p>` + linksHtml()),
-    contact: () => textWin("contact", "say_hi.mail", `<p>Want a launch film, an ad, or something weird and cute?</p><p>Drop me a line ✉</p>` + linksHtml(), 400),
-    trash: () => { sfx.nope(); textWin("trash", "Trash", `<p>Trash is empty.</p><p>I don't throw drafts away — I re-cut them ♥</p>`, 360); },
+      `<p class="folder-meta">${total} videos · ${P.folders.length} startups · ${P.apps.length} app shipped</p>` + socialBtns()),
+    contact: () => textWin("contact", "say_hi.mail",
+      `<p>Launching something? I'd love to help it land.</p>
+       <p><a class="btn" href="mailto:${esc(P.email)}">✉ ${esc(P.email)}</a></p>` + socialBtns(), 440),
+    trash: () => { sfx.nope(); textWin("trash", "Trash", `<p>Trash is empty.</p><p>I don't throw drafts away. I re-cut them ♥</p>`, 360); },
+    apps: () => openCartridge(),
+    resume: () => openResume(),
   };
+
+  /* ================= vibe-coded cartridge ================= */
+  function openCartridge() {
+    sfx.insert();
+    const body = h(`<div class="cart">
+      <div class="cart-top">${sprite(CART, cartPal)}<div><b>vibe_coded</b><div class="folder-meta">apps I designed, built & shipped myself</div></div></div>
+      <div class="homescreen"></div>
+    </div>`);
+    const home = $(".homescreen", body);
+    P.apps.forEach((app) => {
+      const b = h(`<button class="app-icon"><img alt="" src="${app.icon}"><span>${esc(app.name)}</span></button>`);
+      b.addEventListener("pointerenter", hoverSfx);
+      b.addEventListener("click", () => { sfx.click(); openApp(app); });
+      home.append(b);
+    });
+    const self = h(`<button class="app-icon"><span class="self">${sprite(HEART, base)}</span><span>ConnieOS</span></button>`);
+    self.addEventListener("click", () => { sfx.meow(); self.classList.remove("wiggle"); void self.offsetWidth; self.classList.add("wiggle"); say("you're already in it :3"); });
+    home.append(self, h(`<div class="app-icon soon"><span class="slot">+</span><span>loading…</span></div>`));
+    openWindow({ id: "apps", title: "vibe_coded.cart", width: 440, body });
+  }
+
+  function openApp(app) {
+    const body = h(`<div class="app">
+      <div class="phone"><div class="notch"></div><div class="phone-screen"></div><div class="dots"></div></div>
+      <div class="app-info">
+        <div class="app-head"><img alt="" src="${app.icon}"><div><h3>${esc(app.name)}</h3><p class="tag-line">${esc(app.tagline)}</p></div></div>
+        <p>${esc(app.about)}</p>
+        <ol class="steps">${app.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
+        <p class="built">${esc(app.built)}</p>
+        <div class="chips">${app.stack.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
+        <div class="links"><a class="btn hot" href="${esc(app.url)}" target="_blank" rel="noopener">↗ ${esc(app.url.replace(/^https?:\/\//, ""))}</a></div>
+      </div>
+    </div>`);
+    const scr = $(".phone-screen", body), dots = $(".dots", body);
+    let i = 0, timer;
+    app.screens.forEach((src, k) => {
+      scr.append(h(`<img alt="" src="${src}" ${k ? "" : 'class="on"'}>`));
+      const d = h(`<button aria-label="screen ${k + 1}" ${k ? "" : 'class="on"'}></button>`);
+      d.addEventListener("click", () => { sfx.select(); show(k); restart(); });
+      dots.append(d);
+    });
+    const show = (k) => {
+      i = (k + app.screens.length) % app.screens.length;
+      scr.querySelectorAll("img").forEach((im, n) => im.classList.toggle("on", n === i));
+      dots.querySelectorAll("button").forEach((d, n) => d.classList.toggle("on", n === i));
+    };
+    const restart = () => { clearInterval(timer); timer = setInterval(() => body.isConnected ? show(i + 1) : clearInterval(timer), 2600); };
+    scr.addEventListener("click", () => { sfx.select(); show(i + 1); restart(); });
+    restart();
+    $(".hot", body).addEventListener("click", sfx.click);
+    openWindow({ id: "app-" + app.id, title: app.name.toLowerCase() + ".app", width: 640, body });
+  }
+
+  /* ================= resume printer ================= */
+  function openResume() {
+    const r = P.resume, PRINT_SECS = 1.8;
+    const li = (arr) => arr.map((x) => `<li>${esc(x)}</li>`).join("");
+    const body = h(`<div class="printer-wrap">
+      <div class="printer">${sprite(PRINTER, printerPal)}</div>
+      <div class="paper-slot"><div class="paper">
+        <div class="paper-in">
+          <div class="r-name">${esc(r.name)}</div>
+          <div class="r-head">★ ${esc(r.headline)} ★</div>
+          <div class="r-school">${esc(r.school)}</div>
+          <div class="r-sec">now</div><ul>${li(r.now)}</ul>
+          <div class="r-sec">before</div><ul>${li(r.before)}</ul>
+          <div class="r-sec">good at</div>
+          <div class="chips">${r.skills.map((s) => `<span class="chip">${esc(s)}</span>`).join("")}</div>
+          <div class="r-cut">- - - - - ✂ - - - - - - - - - - - - - -</div>
+          <div class="links">
+            <a class="btn hot" href="${esc(r.pdf)}" download="Connie-Lin-Resume.pdf">⬇ download pdf</a>
+            <a class="btn" href="${esc(r.pdf)}" target="_blank" rel="noopener">↗ full resume</a>
+            <button class="btn again">↻ print again</button>
+          </div>
+        </div>
+      </div></div>
+    </div>`);
+    const go = () => {
+      const paper = $(".paper", body), printer = $(".printer", body);
+      paper.classList.remove("printing"); printer.classList.remove("busy"); void paper.offsetWidth;
+      paper.style.setProperty("--secs", PRINT_SECS + "s");
+      paper.classList.add("printing"); printer.classList.add("busy");
+      sfx.print(PRINT_SECS);
+      setTimeout(() => printer.classList.remove("busy"), PRINT_SECS * 1000);
+    };
+    $(".again", body).addEventListener("click", go);
+    body.querySelectorAll("a.btn").forEach((a) => a.addEventListener("click", sfx.click));
+    openWindow({ id: "resume", title: "print_resume.exe", width: 480, body });
+    go();
+  }
+
+  /* ================= social stickers ================= */
+  const STICKER_NAME = { x: "X", xhs: "小红书", ig: "IG", in: "LinkedIn" };
+  const stickerWrap = $("#stickers");
+  P.socials.forEach((s, k) => {
+    const a = h(`<a class="sticker s-${s.id}" href="${esc(s.url)}" target="_blank" rel="noopener" style="--r:${[-7, 5, -3, 8][k % 4]}deg">
+      <span class="s-badge">${s.id === "ig" ? sprite(CAMERA, { L: "#fff" }) : esc({ x: "X", xhs: "小红书", in: "in" }[s.id])}</span>
+      <span class="s-handle">${esc(s.label)}</span></a>`);
+    a.title = `${STICKER_NAME[s.id]} ${s.label}`;
+    a.addEventListener("pointerenter", hoverSfx);
+    a.addEventListener("click", () => sfx.peel());
+    stickerWrap.append(a);
+  });
 
   /* ================= desktop icons ================= */
   const icons = [
     ...P.folders.map((f) => ({ label: f.name, svg: folderIcon(f.color), open: () => openFolder(f) })),
+    { label: "vibe_coded", svg: sprite(CART, cartPal), open: openers.apps, cls: "cart-icon" },
+    { label: "resume", svg: sprite(PRINTER, printerPal), open: openers.resume },
     { label: "about_me.txt", svg: sprite(TXT, base), open: openers.about },
     { label: "say_hi.mail", svg: sprite(MAIL, base), open: openers.contact },
-    { label: "Trash", svg: sprite(TRASH, base), open: openers.trash },
+    { label: "Trash", svg: sprite(TRASH, base), open: openers.trash, cls: "trash" },
   ];
   const iconWrap = $("#icons");
   icons.forEach((ic) => {
-    const el = h(`<button class="icon">${ic.svg}<span class="label"></span></button>`);
+    const el = h(`<button class="icon ${ic.cls || ""}">${ic.svg}<span class="label"></span></button>`);
     $(".label", el).textContent = ic.label;
     el.addEventListener("pointerenter", hoverSfx);
     // mouse: click selects, double-click opens. touch: tap opens.
@@ -388,7 +554,7 @@
     });
     el.addEventListener("dblclick", () => ic.open());
     el.addEventListener("keydown", (e) => e.key === "Enter" && ic.open());
-    iconWrap.append(el);
+    (ic.cls === "trash" ? $("#desktop") : iconWrap).append(el);
   });
   $("#desktop").addEventListener("pointerdown", (e) => {
     if (!e.target.closest(".icon")) document.querySelectorAll(".icon.selected").forEach((o) => o.classList.remove("selected"));
@@ -396,17 +562,20 @@
 
   /* ================= pet cat ================= */
   const pet = $("#pet");
-  const lines = ["meow!", "nice cut ✿", "watch the pixel fridge one", "*purr*", "more videos inside →", "hi :3"];
+  const lines = ["meow!", "nice cut ✿", "try the printer →", "*purr*", "peel a sticker!", "hi :3", "she made an app too"];
+  function say(text) {
+    document.querySelector(".bubble")?.remove();
+    const b = h(`<div class="bubble pixel"></div>`);
+    b.textContent = text;
+    $("#desktop").append(b);
+    setTimeout(() => b.remove(), 1800);
+  }
   pet.innerHTML = sprite(CAT(false), base);
   setInterval(() => { pet.innerHTML = sprite(CAT(true), base); setTimeout(() => (pet.innerHTML = sprite(CAT(false), base)), 160); }, 3200);
   pet.addEventListener("click", () => {
     sfx.meow();
     pet.classList.remove("hop"); void pet.offsetWidth; pet.classList.add("hop");
-    document.querySelector(".bubble")?.remove();
-    const b = h(`<div class="bubble pixel"></div>`);
-    b.textContent = lines[Math.floor(Math.random() * lines.length)];
-    $("#desktop").append(b);
-    setTimeout(() => b.remove(), 1800);
+    say(lines[Math.floor(Math.random() * lines.length)]);
   });
 
   /* ================= keyboard ================= */

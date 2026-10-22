@@ -215,9 +215,6 @@ a { color: inherit; cursor: var(--pointer); }
 
 /* ---------- mobile ---------- */
 @media (max-width: 720px) {
-  #icons { flex-direction: row; right: 12px; left: 12px; bottom: auto; }
-  .icon { width: 84px; }
-  .hello { right: 20px; bottom: 120px; }
   .win { left: 8px !important; right: 8px; top: 44px !important; width: auto !important; max-height: calc(100vh - 56px); }
   .titlebar { cursor: default; }
 }
@@ -334,20 +331,11 @@ a { color: inherit; cursor: var(--pointer); }
 .s-in .s-badge { background: #0a66c2; text-transform: lowercase; }
 
 @media (max-width: 720px) {
-  #stickers { top: auto; bottom: 190px; left: 16px; right: 16px; width: auto; justify-content: center; }
-  .hello { bottom: 110px; }
   .app { grid-template-columns: 1fr; }
   .phone { width: 190px; justify-self: center; }
 }
 
-/* trash lives in the bottom-left corner like a real desktop */
-.icon.trash { position: absolute; left: 20px; bottom: 20px; }
-#icons { bottom: 130px; gap: 6px 10px; }
 .s-in .s-badge { font-family: system-ui, sans-serif; font-weight: 800; font-size: 17px; }
-@media (max-width: 720px) {
-  #icons { bottom: auto; }
-  #stickers { top: 290px; bottom: auto; }
-}
 
 /* ================= v3: scattered desktop ================= */
 #icons { inset: 0; display: block; }
@@ -361,13 +349,9 @@ a { color: inherit; cursor: var(--pointer); }
 .icon:hover svg { transform: none; }
 .icon.dragging { transform: rotate(0deg) scale(1.1); z-index: 50; cursor: grabbing; }
 .icon.dragging svg { filter: drop-shadow(8px 10px 0 var(--shadow)); }
-.icon.trash { left: auto; bottom: auto; }
 .cart-icon .label, .icon[style*="--s:150px"] .label { font-size: 18px; }
 .cart-icon svg { filter: drop-shadow(6px 6px 0 #d8cdf7); }
 .cart-icon:hover { transform: rotate(-2deg) translateY(-6px) scale(1.04); }
-.phone-icon { animation: buzz 3.2s steps(2) infinite; }
-.phone-icon:hover { animation: none; }
-@keyframes buzz { 0%, 86%, 100% { transform: rotate(var(--r)); } 89% { transform: rotate(calc(var(--r) - 6deg)); } 92% { transform: rotate(calc(var(--r) + 6deg)); } 95% { transform: rotate(calc(var(--r) - 4deg)); } }
 .badge {
   position: absolute; top: -4px; right: -6px; min-width: 24px; height: 24px; display: grid; place-items: center;
   background: #ff3b5c; color: #fff; font-family: "Silkscreen", monospace; font-size: 13px;
@@ -413,10 +397,48 @@ a { color: inherit; cursor: var(--pointer); }
 .shake { animation: shake .3s steps(3); }
 @keyframes shake { 33% { transform: translateX(-5px); } 66% { transform: translateX(5px); } }
 
+
+/* ================= v4: anchored layout ================= */
+/* every object is pinned to a corner/edge so it holds up on any screen; --k scales sizes down */
+:root { --k: 1; }
+.icon svg { width: calc(var(--s) * var(--k)); height: calc(var(--s) * var(--k)); }
+.ic-hellyeah  { left: 3%;  top: 3%; }
+.ic-teamily   { left: 13%; top: 17%; }
+.ic-traceroot { left: 4%;  top: 31%; }
+.ic-resume    { right: 3%; top: 3%; }
+.ic-belo      { left: 3%;  bottom: 3%; }
+.ic-phone     { right: 56px; bottom: 270px; }
+.ic-trash     { left: calc(50% - 30px); bottom: 12px; }
+/* phone stays upright; it just jiggles sideways when a "new message" buzzes */
+.phone-icon { animation: buzz 3.2s steps(2) infinite; }
+.phone-icon:hover { animation: none; }
+@keyframes buzz { 0%, 86%, 100% { translate: 0; } 89% { translate: -4px 0; } 92% { translate: 4px 0; } 95% { translate: -3px 0; } }
+
+/* socials: one neat column in the middle of the screen */
+#stickers {
+  left: 50%; top: 50%; right: auto; bottom: auto; width: 270px;
+  transform: translate(-50%, -50%);
+  flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 18px;
+}
+.sticker { --r: 0deg; padding-right: 14px; }
+.sticker:hover { transform: translateX(6px) scale(1.04); }
+.sticker:active { transform: translateX(6px) scale(.98); }
+
 @media (max-width: 720px) {
-  #icons { position: absolute; inset: 12px 8px auto; display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 4px; }
-  .icon { position: relative; left: auto !important; top: auto !important; }
-  .icon svg { width: calc(var(--s) * .55); height: calc(var(--s) * .55); }
-  .phone-icon .badge { top: -2px; right: 0; }
-  #stickers { top: 330px; }
+  :root { --k: .72; }
+  .ic-teamily { left: 27%; top: 3%; }
+  .ic-traceroot { left: 50%; top: 4%; }
+  .ic-phone { right: 24px; bottom: 205px; }
+  .hello { right: 20px; bottom: 105px; }
+  #stickers { width: 240px; top: 47%; gap: 14px; }
+}
+@media (max-width: 480px) {
+  :root { --k: .56; }
+  .ic-teamily { left: 25%; }
+  .ic-traceroot { left: 46%; }
+  .ic-phone { bottom: 190px; }
+  .hello-hi { font-size: 20px; }
+  .hello-sub { font-size: 16px; }
+  .hello-tip { display: none; }
+  #stickers { width: 220px; }
 }

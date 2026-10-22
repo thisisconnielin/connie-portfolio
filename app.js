@@ -573,7 +573,7 @@
   const STICKER_NAME = { x: "X", xhs: "小红书", ig: "IG", in: "LinkedIn" };
   const stickerWrap = $("#stickers");
   P.socials.forEach((s, k) => {
-    const a = h(`<a class="sticker s-${s.id}" href="${esc(s.url)}" target="_blank" rel="noopener" style="--r:${[-7, 5, -3, 8][k % 4]}deg">
+    const a = h(`<a class="sticker s-${s.id}" href="${esc(s.url)}" target="_blank" rel="noopener">
       <span class="s-badge">${s.id === "ig" ? sprite(CAMERA, { L: "#fff" }) : esc({ x: "X", xhs: "小红书", in: "in" }[s.id])}</span>
       <span class="s-handle">${esc(s.label)}</span></a>`);
     a.title = `${STICKER_NAME[s.id]} ${s.label}`;
@@ -585,34 +585,34 @@
   /* ================= desktop objects ================= */
   // scattered on purpose: each object has its own size (px), spot (% of desktop) and tilt
   const icons = [
-    { id: "hellyeah", size: 92, x: 3, y: 4, r: -4 },
-    { id: "teamily", size: 70, x: 12, y: 21, r: 5 },
-    { id: "traceroot", size: 62, x: 4, y: 36, r: -2 },
-    { id: "belo", label: "Belo", svg: sprite(CART, cartPal), open: openers.belo, size: 200, x: 26, y: 16, r: -6, cls: "cart-icon" },
-    { id: "resume", label: "resume", svg: sprite(PRINTER, printerPal), open: openers.resume, size: 150, x: 9, y: 56, r: 3 },
-    { id: "phone", label: "say hi", svg: sprite(PHONE, phonePal), open: openers.contact, size: 128, x: 56, y: 30, r: 7, cls: "phone-icon" },
-    { id: "trash", label: "Trash", svg: sprite(TRASH, base), open: openers.trash, size: 44, x: 2, y: 86, r: 0 },
+    // spots live in style.css (.ic-<id>) so they can change per screen size
+    { id: "hellyeah", size: 92, r: -4 },
+    { id: "teamily", size: 70, r: 5 },
+    { id: "traceroot", size: 62, r: -2 },
+    { id: "belo", label: "Belo", svg: sprite(CART, cartPal), open: openers.belo, size: 210, r: -5, cls: "cart-icon" },
+    { id: "resume", label: "resume", svg: sprite(PRINTER, printerPal), open: openers.resume, size: 150, r: 3 },
+    { id: "phone", label: "say hi", svg: sprite(PHONE, phonePal), open: openers.contact, size: 112, r: 0, cls: "phone-icon" },
+    { id: "trash", label: "Trash", svg: sprite(TRASH, base), open: openers.trash, size: 44, r: 0 },
   ].map((ic) => {
     const f = P.folders.find((f) => f.id === ic.id);
     return f ? { ...ic, label: f.name, svg: folderIcon(f.color), open: () => openFolder(f) } : ic;
   });
   const iconWrap = $("#icons");
   icons.forEach((ic) => {
-    const el = h(`<button class="icon ${ic.cls || ""}" style="--s:${ic.size}px;--r:${ic.r}deg;left:${ic.x}%;top:${ic.y}%">${ic.svg}<span class="label"></span></button>`);
+    const el = h(`<button class="icon ic-${ic.id} ${ic.cls || ""}" style="--s:${ic.size}px;--r:${ic.r}deg">${ic.svg}<span class="label"></span></button>`);
     $(".label", el).textContent = ic.label;
     if (ic.id === "phone") el.append(h(`<span class="badge">1</span>`));
     el.addEventListener("pointerenter", hoverSfx);
     // click opens; press-and-move drags the object somewhere else
     el.addEventListener("pointerdown", (e) => {
-      if (isMobile()) return;
+      if (e.pointerType !== "mouse") return;
       const sx = e.clientX, sy = e.clientY, ox = el.offsetLeft, oy = el.offsetTop;
       let moved = false;
       el.setPointerCapture(e.pointerId);
       const move = (ev) => {
         if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 5) return;
         if (!moved) { moved = true; el.classList.add("dragging"); sfx.select(); }
-        el.style.left = ox + ev.clientX - sx + "px";
-        el.style.top = oy + ev.clientY - sy + "px";
+        Object.assign(el.style, { left: ox + ev.clientX - sx + "px", top: oy + ev.clientY - sy + "px", right: "auto", bottom: "auto" });
       };
       const up = () => {
         el.removeEventListener("pointermove", move); el.removeEventListener("pointerup", up);

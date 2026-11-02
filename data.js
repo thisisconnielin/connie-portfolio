@@ -69,7 +69,7 @@ window.PORTFOLIO = {
   folders: [
     {
       id: "work",
-      name: "My Work",
+      name: "watch me cook 🍳",
       color: "#ffb84d",
       blurb: "Launch films, ads & product videos for AI startups: Teamily, Hellyeah & TraceRoot.",
       // brand shows as a chip in the player; order here = order in the folder (TraceRoot last)

@@ -402,9 +402,7 @@ a { color: inherit; cursor: var(--pointer); }
 /* every object is pinned to a corner/edge so it holds up on any screen; --k scales sizes down */
 :root { --k: 1; }
 .icon svg { width: calc(var(--s) * var(--k)); height: calc(var(--s) * var(--k)); }
-.ic-hellyeah  { left: 3%;  top: 3%; }
-.ic-teamily   { left: 13%; top: 17%; }
-.ic-traceroot { left: 4%;  top: 31%; }
+.ic-work      { left: 3%;  top: 3%; }
 .ic-resume    { right: 3%; top: 3%; }
 .ic-belo      { left: 3%;  bottom: 3%; }
 .ic-phone     { right: 56px; bottom: 270px; }
@@ -426,16 +424,12 @@ a { color: inherit; cursor: var(--pointer); }
 
 @media (max-width: 720px) {
   :root { --k: .72; }
-  .ic-teamily { left: 27%; top: 3%; }
-  .ic-traceroot { left: 50%; top: 4%; }
   .ic-phone { right: 24px; bottom: 205px; }
   .hello { right: 20px; bottom: 105px; }
   #stickers { width: 240px; top: 47%; gap: 14px; }
 }
 @media (max-width: 480px) {
   :root { --k: .56; }
-  .ic-teamily { left: 25%; }
-  .ic-traceroot { left: 46%; }
   .ic-phone { bottom: 190px; }
   .hello-hi { font-size: 20px; }
   .hello-sub { font-size: 16px; }

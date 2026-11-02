@@ -38,7 +38,7 @@ window.PORTFOLIO = {
     headline: "GTM for startups",
     school: "UCLA · B.S. Statistics & Data Science · 2026",
     now: [
-      "GTM & content for AI startups: Hellyeah, Teamily, TraceRoot (all the films on this desktop)",
+      "GTM & content for AI startups: Teamily, Hellyeah (all the films on this desktop)",
       "Vibe-coded Belo, a live map of plans nearby (iOS, TestFlight beta)",
       "Founder, Kairo: product, iOS app, branding & go-to-market (2026–)",
     ],
@@ -68,13 +68,31 @@ window.PORTFOLIO = {
 
   folders: [
     {
-      id: "hellyeah",
-      name: "Hellyeah",
-      color: "#ff6a3d",
-      blurb: "AI marketing agent — brand films, ads, product demos & events.",
+      id: "work",
+      name: "My Work",
+      color: "#ffb84d",
+      blurb: "Launch films, ads & product videos for AI startups: Teamily, Hellyeah & TraceRoot.",
+      // brand shows as a chip in the player; order here = order in the folder (TraceRoot last)
       groups: [
         {
-          name: "Brand films",
+          brand: "Teamily", name: "Teamily · Creative showcase",
+          items: [
+            { file: "teamily/choose-your-squad", title: "Choose Your Squad", dur: "20s", ratio: "16:9", note: "Fighting-game character select, but your fighters are AI agents." },
+            { file: "teamily/tetris-week", title: "Tetris Week", dur: "22s", ratio: "16:9", note: "A whole week of tasks clearing like Tetris lines." },
+          ],
+        },
+        {
+          brand: "Teamily", name: "Teamily · Use cases",
+          items: [
+            { file: "teamily/launch-squad", title: "Launch Squad", dur: "15s", ratio: "16:9", note: "Light/green UI film: a squad of agents ships a launch." },
+            { file: "teamily/work-with-teamily", title: "Work With Teamily", dur: "20s", ratio: "16:9", note: "Product walkthrough on phone + desktop." },
+            { file: "teamily/agents-fighting", title: "Agents Fighting", dur: "25s", ratio: "16:9", note: "Vinyl-toy agents fight it out over the quarterly report." },
+            { file: "teamily/agents-arguing", title: "Agents Arguing", dur: "20s", ratio: "9:16", note: "Vertical: what happens when your agents disagree." },
+            { file: "teamily/group-chat", title: "Group Chat", dur: "19s", ratio: "16:9", note: "Early chat-format concept." },
+          ],
+        },
+        {
+          brand: "Hellyeah", name: "Hellyeah · Brand films",
           items: [
             { file: "hellyeah/brand-film", title: "Brand Film", dur: "53s", ratio: "16:9", note: "The numbers story: what an AI ad team does for a small business." },
             { file: "hellyeah/launch-film-60s", title: "Launch Film", dur: "60s", ratio: "16:9", note: "60s launch reel, product UI front and center. Approve → done." },
@@ -90,7 +108,7 @@ window.PORTFOLIO = {
           ],
         },
         {
-          name: "Ads",
+          brand: "Hellyeah", name: "Hellyeah · Ads",
           items: [
             { file: "hellyeah/fast-cut", title: "Fast Cut", dur: "32s", ratio: "9:16", note: "No-VO 120 BPM product cut for social." },
             { file: "hellyeah/game-has-changed", title: "The Game Has Changed", dur: "33s", ratio: "16:9", note: "Crown-1 army vs. the agency horde. Epic mass-battle ad." },
@@ -105,48 +123,15 @@ window.PORTFOLIO = {
           ],
         },
         {
-          name: "Product & events",
+          brand: "Hellyeah", name: "Hellyeah · Product & events",
           items: [
             { file: "hellyeah/website-demo", title: "Website Demo", dur: "60s", ratio: "16:9", note: "Campaign builder walkthrough rendered straight from the code repo." },
             { file: "hellyeah/launch-demo-1-0", title: "Launch Demo 1.0", dur: "90s", ratio: "16:9", note: "Talking head + screen demo with pop-ups." },
             { file: "hellyeah/ooo-techno-recap", title: "OOO Techno Night Recap", dur: "64s", ratio: "16:9", note: "Event recap cut to a 140 BPM techno track." },
           ],
         },
-      ],
-    },
-    {
-      id: "teamily",
-      name: "Teamily",
-      color: "#3ddc84",
-      blurb: "AI teammates in your group chat — showcase films & use cases.",
-      groups: [
         {
-          name: "Creative showcase",
-          items: [
-            { file: "teamily/choose-your-squad", title: "Choose Your Squad", dur: "20s", ratio: "16:9", note: "Fighting-game character select, but your fighters are AI agents." },
-            { file: "teamily/tetris-week", title: "Tetris Week", dur: "22s", ratio: "16:9", note: "A whole week of tasks clearing like Tetris lines." },
-          ],
-        },
-        {
-          name: "Use cases",
-          items: [
-            { file: "teamily/launch-squad", title: "Launch Squad", dur: "15s", ratio: "16:9", note: "Light/green UI film: a squad of agents ships a launch." },
-            { file: "teamily/work-with-teamily", title: "Work With Teamily", dur: "20s", ratio: "16:9", note: "Product walkthrough on phone + desktop." },
-            { file: "teamily/agents-fighting", title: "Agents Fighting", dur: "25s", ratio: "16:9", note: "Vinyl-toy agents fight it out over the quarterly report." },
-            { file: "teamily/agents-arguing", title: "Agents Arguing", dur: "20s", ratio: "9:16", note: "Vertical: what happens when your agents disagree." },
-            { file: "teamily/group-chat", title: "Group Chat", dur: "19s", ratio: "16:9", note: "Early chat-format concept." },
-          ],
-        },
-      ],
-    },
-    {
-      id: "traceroot",
-      name: "TraceRoot",
-      color: "#8b7bff",
-      blurb: "AI debugging for production — launch films.",
-      groups: [
-        {
-          name: "Launch films",
+          brand: "TraceRoot", name: "TraceRoot · Launch films",
           items: [
             { file: "traceroot/introducing-traceroot", title: "Introducing TraceRoot", dur: "15s", ratio: "16:9", note: "Short 'Introducing' launch film." },
             { file: "traceroot/traceroot-showcase", title: "TraceRoot Showcase", dur: "34s", ratio: "16:9", note: "Find the pattern: logs → root cause → fix." },

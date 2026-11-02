@@ -409,7 +409,7 @@
         <button class="btn fs" aria-label="fullscreen">⛶</button>
       </div>
       <div class="info"><h3></h3><p></p>
-        <div class="chips"><span class="chip">${folder.name}</span><span class="chip">${item.dur}</span><span class="chip">${item.ratio}</span></div>
+        <div class="chips"><span class="chip">${(folder.groups.find((g) => g.items.includes(item)) || {}).brand || folder.name}</span><span class="chip">${item.dur}</span><span class="chip">${item.ratio}</span></div>
       </div>
       <div class="nav">
         <button class="btn prev" ${idx === 0 ? "disabled" : ""}>◀ prev</button>
@@ -458,7 +458,7 @@
       const body = h(`<div class="txt about">
         <div class="about-head">${sprite(CAT(false), base)}<h3>${esc(P.aboutTitle)}</h3></div>
         ${P.about.map((p) => `<p>${md(p)}</p>`).join("")}
-        <p class="folder-meta">${total} videos · ${P.folders.length} startups · 1 app in the works</p>${socialBtns()}</div>`);
+        <p class="folder-meta">${total} videos · ${new Set(P.folders.flatMap((f) => f.groups.map((g) => g.brand))).size} startups · 1 app in the works</p>${socialBtns()}</div>`);
       body.querySelectorAll("[data-app]").forEach((b) => b.addEventListener("click", () => { sfx.insert(); openApp(P.apps.find((a) => a.id === b.dataset.app)); }));
       openWindow({ id: "about", title: "about me", width: 520, body });
     },
@@ -611,9 +611,7 @@
   // scattered on purpose: each object has its own size (px), spot (% of desktop) and tilt
   const icons = [
     // spots live in style.css (.ic-<id>) so they can change per screen size
-    { id: "hellyeah", size: 92, r: -4 },
-    { id: "teamily", size: 70, r: 5 },
-    { id: "traceroot", size: 62, r: -2 },
+    { id: "work", size: 96, r: -4 },
     { id: "belo", label: "Belo", svg: sprite(CART, cartPal), open: openers.belo, size: 210, r: -5, cls: "cart-icon" },
     { id: "resume", label: "resume", svg: sprite(PRINTER, printerPal), open: openers.resume, size: 150, r: 3 },
     { id: "phone", label: "say hi", svg: sprite(PHONE, phonePal), open: openers.contact, size: 112, r: 0, cls: "phone-icon" },

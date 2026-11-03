@@ -1,4 +1,4 @@
-# ConnieOS — video portfolio
+# ConnieOS — portfolio
 
 A tiny pixel desktop that holds my work. Double-click a folder, click a file, watch the film. Every click makes a little chiptune sound (generated live with WebAudio, so there are no audio files).
 

@@ -672,7 +672,7 @@
       ${g.intro.map((p) => `<p>${md(p)}</p>`).join("")}
       <div class="skills">${g.skills.map((s) => `<a class="skill" href="${esc(s.url)}" target="_blank" rel="noopener">
         <b>${esc(s.name)} ↗</b><span>${esc(s.about)}</span>
-        <span class="chips">${s.tags.map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</span></a>`).join("")}
+        ${s.tags ? `<span class="chips">${s.tags.map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</span>` : ""}</a>`).join("")}
         <div class="skill soon">${esc(g.more)}</div>
       </div>
       <div class="links"><a class="btn hot" href="${esc(g.url)}" target="_blank" rel="noopener">↗ github.com/${esc(g.user)}</a></div>

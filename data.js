@@ -4,7 +4,7 @@
 
 window.PORTFOLIO = {
   owner: "Connie",
-  role: "GTM for startups",
+  role: "I do GTM for startups",
   // about me window; **word** = bold, **Belo** opens the Belo app
   aboutTitle: "Hi, I'm Connie! ♡",
   about: [
@@ -66,12 +66,32 @@ window.PORTFOLIO = {
     },
   ],
 
+  // the big PUBLISH key on the desktop: a short intro window, then out to GitHub
+  github: {
+    user: "thisisconnielin",
+    url: "https://github.com/thisisconnielin",
+    title: "Skills I'm shipping ✿",
+    intro: [
+      "Lately I've been building **Claude skills**: little packaged playbooks that teach Claude to do a real GTM job, start to finish.",
+      "I take a workflow I'd normally do by hand, write down exactly how I do it, and turn it into something anyone can install in one line and run in their own Claude Code.",
+    ],
+    skills: [
+      {
+        name: "Tripwire",
+        url: "https://github.com/thisisconnielin/tripwire",
+        about: "Finds your competitors, tracks what they change, launch and post, then gives you a short GTM readout: top moves, why they matter, what to do next.",
+        tags: ["competitive intel", "Claude Code", "Python"],
+      },
+    ],
+    more: "more skills on the way ✿",
+  },
+
   folders: [
     {
       id: "work",
       name: "watch me cook 🍳",
       color: "#ffb84d",
-      blurb: "Launch films, ads & product videos for AI startups: Teamily, Hellyeah & TraceRoot.",
+      blurb: "Launch films, ads & product videos for AI startups",
       // brand shows as a chip in the player; order here = order in the folder (TraceRoot last)
       groups: [
         {

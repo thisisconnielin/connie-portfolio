@@ -250,6 +250,9 @@
     send: () => { noise(0.12, { freq: 1200, q: 0.6, vol: 0.06 }); tone(523, 0.12, { type: "triangle", to: 1568, vol: 0.07 }); },
     ding: () => seq([1568, 2093], 0.06, { type: "sine", vol: 0.07 }),
     peel: () => { noise(0.16, { freq: 3500, q: 0.7, vol: 0.09 }); tone(523, 0.08, { type: "triangle", to: 1046, vol: 0.06, at: 0.12 }); },
+    // github calendar: one blip per column as SHIP IT fills in, then a little "shipped" arpeggio
+    blip: (i) => tone(880 + i * 22, 0.025, { vol: 0.025, type: "square" }),
+    shipped: () => seq([523, 784, 1046, 1568], 0.06, { type: "square", vol: 0.05 }),
     insert: () => { noise(0.05, { freq: 600, vol: 0.12 }); tone(196, 0.06, { at: 0.06 }); seq([392, 523, 784], 0.07, { type: "triangle", vol: 0.08, at: 0.2 }); },
   };
   let lastHover = 0;
@@ -275,6 +278,7 @@
   $("#bootStart").addEventListener("click", () => {
     unlockAudio(); sfx.boot();
     $("#boot").classList.add("gone");
+    document.dispatchEvent(new Event("booted"));
     setTimeout(() => $("#boot").remove(), 400);
   });
 
@@ -466,6 +470,7 @@
     trash: () => { sfx.nope(); textWin("trash", "Trash", `<p>Trash is empty.</p><p>I don't throw drafts away. I re-cut them ♥</p>`, 360); },
     belo: () => { sfx.insert(); openApp(P.apps[0]); },
     resume: () => openResume(),
+    github: () => { sfx.click(); openGithub(); },
   };
 
   /* ================= phone: DM me ================= */
@@ -594,6 +599,89 @@
     go();
   }
 
+  /* ================= github calendar: real squares, then they spell SHIP IT ================= */
+  const WEEKS = 34;
+  const FONT = {
+    S: [".###", "#...", ".##.", "...#", "###."], H: ["#..#", "#..#", "####", "#..#", "#..#"],
+    I: ["###", ".#.", ".#.", ".#.", "###"], P: ["###.", "#..#", "###.", "#...", "#..."],
+    T: ["###", ".#.", ".#.", ".#.", ".#."], " ": ["..", "..", "..", "..", ".."],
+  };
+  // 5 rows of '#'/'.', letters joined with a 1-column gap
+  const word = (w) => FONT.S.map((_, y) => [...w].map((c) => FONT[c][y]).join("."));
+  const calHTML = () => `<span class="cal">
+    <span class="cal-months"></span>
+    <span class="cal-body"><span class="cal-days"><i></i><i>Mon</i><i></i><i>Wed</i><i></i><i>Fri</i><i></i></span><span class="cal-grid"></span></span>
+    <span class="cal-foot"><span class="cal-total">contributions in the last year</span>
+      <span class="cal-legend">Less ${[0, 1, 2, 3, 4].map((l) => `<b class="l${l}"></b>`).join("")} More</span></span>
+  </span>`;
+  // snapshot used if the public contributions API is down
+  const CAL_FALLBACK = { "2026-10-22": 1, "2026-11-02": 17, "2026-11-03": 3 };
+  function initCalendar(root) {
+    const grid = $(".cal-grid", root), months = $(".cal-months", root);
+    const iso = (d) => d.toISOString().slice(0, 10);
+    const today = new Date(), start = new Date(today);
+    start.setDate(today.getDate() - today.getDay() - (WEEKS - 1) * 7);
+    const cells = [];
+    for (let w = 0; w < WEEKS; w++) {
+      const col = [];
+      for (let d = 0; d < 7; d++) {
+        const day = new Date(start); day.setDate(start.getDate() + w * 7 + d);
+        const c = h(`<b class="l0"></b>`);
+        c.dataset.date = iso(day);
+        if (day > today) c.classList.add("future");
+        grid.append(c); col.push(c);
+      }
+      cells.push(col);
+      const first = new Date(start); first.setDate(start.getDate() + w * 7);
+      const prev = new Date(first); prev.setDate(first.getDate() - 7);
+      if (w < WEEKS - 2 && (w === 0 || first.getMonth() !== prev.getMonth()) && first.getDate() <= 7 || w === 0)
+        months.append(h(`<i style="--w:${w}">${first.toLocaleString("en", { month: "short" })}</i>`));
+    }
+    const level = (n) => (n <= 0 ? 0 : n < 2 ? 1 : n < 4 ? 2 : n < 8 ? 3 : 4);
+    const set = (c, l) => (c.className = `l${l}` + (c.classList.contains("future") ? " future" : ""));
+    const showReal = (counts) => {
+      cells.flat().forEach((c) => {
+        const n = counts[c.dataset.date] || 0;
+        set(c, level(n));
+        c.title = `${n || "No"} contribution${n === 1 ? "" : "s"} on ${new Date(c.dataset.date + "T12:00").toLocaleDateString("en", { month: "short", day: "numeric" })}`;
+      });
+    };
+    const spell = () => {
+      const rows = word("SHIP IT"), x0 = Math.floor((WEEKS - rows[0].length) / 2);
+      cells.flat().forEach((c) => set(c, 0));
+      [...rows[0]].forEach((_, x) => setTimeout(() => {
+        rows.forEach((r, y) => { if (r[x] === "#") { const c = cells[x0 + x][y + 1]; set(c, 3 + Math.round(Math.random())); c.title = "shipped ✿"; } });
+        sfx.blip(x);
+      }, x * 55));
+      setTimeout(sfx.shipped, rows[0].length * 55 + 80);
+    };
+    const data = fetch(`https://github-contributions-api.jogruber.de/v4/${P.github.user}?y=last`)
+      .then((r) => r.json())
+      .then((d) => { const m = {}; d.contributions.forEach((c) => (m[c.date] = c.count)); return { m, total: d.total.lastYear }; })
+      .catch(() => ({ m: CAL_FALLBACK, total: Object.values(CAL_FALLBACK).reduce((a, b) => a + b, 0) }));
+    data.then(({ m, total }) => { showReal(m); $(".cal-total", root).textContent = `${total} contributions in the last year`; });
+    // after boot: show the real calendar for a beat, then spell it out
+    document.addEventListener("booted", () => data.then(() => setTimeout(spell, 1600)), { once: true });
+  }
+
+  function openGithub() {
+    const g = P.github;
+    const md = (t) => esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+    const body = h(`<div class="txt gh">
+      <h3>${esc(g.title)}</h3>
+      ${g.intro.map((p) => `<p>${md(p)}</p>`).join("")}
+      <div class="skills">${g.skills.map((s) => `<a class="skill" href="${esc(s.url)}" target="_blank" rel="noopener">
+        <b>${esc(s.name)} ↗</b><span>${esc(s.about)}</span>
+        <span class="chips">${s.tags.map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</span></a>`).join("")}
+        <div class="skill soon">${esc(g.more)}</div>
+      </div>
+      <div class="links"><a class="btn hot" href="${esc(g.url)}" target="_blank" rel="noopener">↗ github.com/${esc(g.user)}</a></div>
+    </div>`);
+    $(".btn.hot", body).addEventListener("click", sfx.shipped);
+    body.querySelectorAll(".skill[href]").forEach((a) => { a.addEventListener("pointerenter", hoverSfx); a.addEventListener("click", sfx.click); });
+    openWindow({ id: "github", title: "skills.exe", width: 500, body });
+  }
+
   /* ================= social stickers ================= */
   const STICKER_NAME = { x: "X", xhs: "小红书", ig: "IG", in: "LinkedIn" };
   const stickerWrap = $("#stickers");
@@ -614,6 +702,7 @@
     { id: "work", size: 96, r: -4 },
     { id: "belo", label: "Belo", svg: sprite(CART, cartPal), open: openers.belo, size: 210, r: -5, cls: "cart-icon" },
     { id: "resume", label: "resume", svg: sprite(PRINTER, printerPal), open: openers.resume, size: 150, r: 3 },
+    { id: "github", label: "my skills ↗ github", svg: calHTML(), open: openers.github, size: 1, r: -1, cls: "cal-icon" },
     { id: "phone", label: "say hi", svg: sprite(PHONE, phonePal), open: openers.contact, size: 112, r: 0, cls: "phone-icon" },
     { id: "trash", label: "Trash", svg: sprite(TRASH, base), open: openers.trash, size: 44, r: 0 },
   ].map((ic) => {
@@ -651,11 +740,12 @@
       ic.open();
     });
     iconWrap.append(el);
+    if (ic.id === "github") initCalendar(el);
   });
 
   /* ================= pet cat ================= */
   const pet = $("#pet");
-  const lines = ["meow!", "nice cut ✿", "try the printer!", "*purr*", "peel a sticker!", "hi :3", "text her on the phone ♡", "you can drag stuff around"];
+  const lines = ["meow!", "nice cut ✿", "try the printer!", "*purr*", "peel a sticker!", "hi :3", "text her on the phone ♡", "you can drag stuff around", "look at my github squares!"];
   function say(text) {
     document.querySelector(".bubble")?.remove();
     const b = h(`<div class="bubble pixel"></div>`);

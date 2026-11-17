@@ -33,20 +33,21 @@ window.PORTFOLIO = {
 
   // printed by the printer on the desktop
   resume: {
-    pdf: "media/connie-lin-resume.pdf",
+    pdf: "media/connie-lin-resume.pdf?v=2",
     name: "Connie (Wenqi) Lin",
     headline: "GTM for startups",
     school: "UCLA · B.S. Statistics & Data Science · 2026",
     now: [
-      "GTM & content for AI startups: Teamily, Hellyeah (all the films on this desktop)",
-      "Vibe-coded Belo, a live map of plans nearby (iOS, TestFlight beta)",
-      "Founder, Kairo: product, iOS app, branding & go-to-market (2026–)",
+      "BD & Product Ops Intern, Hellyeah AI: outbound, ad pre-audits for 30+ companies, growth proposals, a 60s launch film (2026–)",
+      "Founder, Belo (belowith.com): built and launched solo, React · Supabase · PostgreSQL (2025–)",
+      "Launch films & ads for AI startups (all the films on this desktop)",
     ],
     before: [
+      "Data Science Intern, HSBC: benchmarked LLMs on financial document tasks (2025)",
       "Data Science Intern, Yale: epidemiological modeling in R (2023)",
       "Data projects: enrollment demand modeling, Bayesian MCMC, experiment design",
     ],
-    skills: ["GTM", "launch films", "AI video", "social", "Python", "SQL", "R", "A/B testing", "LLM eval", "SwiftUI", "Supabase"],
+    skills: ["GTM", "outbound", "Clay", "launch films", "AI video", "Python", "SQL", "R", "A/B testing", "LLM eval", "React", "Supabase"],
   },
 
   // vibe-coded apps live in their own cartridge, not a folder

@@ -1,40 +1,48 @@
-# ConnieOS — portfolio
+# Connie Lin — personal website
 
-A tiny pixel desktop that holds my work. Double-click a folder, click a file, watch the film. Every click makes a little chiptune sound (generated live with WebAudio, so there are no audio files).
+**Live: https://thisisconnielin.github.io/connie-portfolio/**
 
-No build step and no dependencies: plain HTML, CSS and JS.
+A single-page personal site: a sticker cat walks on a photoreal moon you can drag. Projects stand on the horizon and open as cards. Small stickers (things I love) bounce, drive and float around the moon, and a paper plane tows a note with my socials across the sky. It is a static site with no build step and no dependencies: one HTML file and a canvas. GitHub Pages serves it as-is.
 
-## Run locally
+## Make your own (Claude skill)
+
+In Claude Code:
+
+```
+/plugin marketplace add thisisconnielin/connie-portfolio
+/plugin install moon-portfolio@connie-portfolio
+```
+
+Then ask *"make me a moon portfolio"*. Claude copies this template, swaps in your name, projects, socials and stickers, and deploys it to your GitHub Pages.
+
+Prefer doing it by hand? Fork the repo and follow [`skills/moon-portfolio/SKILL.md`](skills/moon-portfolio/SKILL.md).
+
+## Local preview
 
 ```bash
 python3 -m http.server 8000
-# open http://localhost:8000
+# then open http://localhost:8000
 ```
 
-## Put it on GitHub Pages
+## Structure
 
-1. Push this repo to GitHub.
-2. **Settings → Pages → Build and deployment → Deploy from a branch**, then pick `main` / `/ (root)`.
-3. The site goes live at `https://<your-username>.github.io/<repo-name>/`.
+- `index.html` — the moon site: layout, motion, and all content (projects, cards, stickers, socials)
+- `assets/` — moon texture, galaxy, the cat, project and toy stickers (transparent PNG / WebP)
+- `media/` — film posters and Belo screenshots used in the cards
+- `classic.html`, `app.js`, `data.js`, `style.css` — the previous pixel-desktop site, kept at `/classic.html` with all 31 films
+- `tools/` — scripts that made the art: cut stickers out of one render (`cut_ref.py`), wrap a moon texture (`make_moon.py`), slice generated sticker sheets (`slice.py`), and the image prompt (`codex-assets-prompt.md`)
+- `skills/moon-portfolio/` — the Claude skill for making your own
 
-## Add or edit a project
+## Deploy to GitHub Pages
 
-Everything on the desktop comes from `data.js`. To add a video:
-
-1. Drop the source file somewhere and add a line `slug|path/relative/to/Desktop.mp4` to `encode-list.txt`.
-2. Run `./encode.sh` to make a 720p web copy plus a poster in `media/<client>/`. Run `./posters.sh` if you want it to pick a better poster frame.
-3. Add an entry to the matching folder in `data.js`.
-
-To change the about text, the links (GitHub / email) and the folder colors, edit the top of `data.js`.
-
-## Files
-
+```bash
+gh repo create <you>.github.io --public --source=. --remote=origin --push
 ```
-index.html    desktop shell
-style.css     pixel UI
-app.js        windows, sounds, sprites, player
-data.js       all portfolio content
-media/        web-sized videos + posters (~140 MB)
-encode.sh     source → web copy (ffmpeg)
-posters.sh    picks the most detailed frame as the poster
-```
+
+Then in the repository settings, under Pages, set the source to the `main` branch (root). The site is live within a minute or two.
+
+## Notes
+
+- `.nojekyll` makes Pages serve every file as-is.
+- Drag, swipe, scroll or use ← → to turn the moon. Tap a project to open it, tap a sticker for a fun fact.
+- Stickers still showing as emoji are placeholders until their art is generated (see `tools/codex-assets-prompt.md`).

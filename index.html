@@ -1,53 +1,330 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Connie Lin ✿ portfolio</title>
-  <meta name="description" content="Connie Lin, GTM for startups: launch films, ads and product videos for Hellyeah, Teamily and TraceRoot, plus Belo, a vibe-coded iOS app." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Silkscreen&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=12" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' shape-rendering='crispEdges'><rect x='1' y='3' width='6' height='2' fill='%23ffb84d'/><rect x='1' y='5' width='14' height='9' fill='%23ffcf6b'/></svg>" />
-</head>
-<body data-layout="b">
-  <!-- boot screen: also unlocks audio on first click -->
-  <div id="boot">
-    <div class="boot-inner">
-      <div class="boot-logo" id="bootLogo"></div>
-      <div class="boot-title">connie's desktop</div>
-      <div class="boot-bar"><span id="bootFill"></span></div>
-      <button class="btn boot-start" id="bootStart" hidden>▶ click to start</button>
-    </div>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>connie lin ✦</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --paper: #f6f1e7; --ink: #23202a; --rose: #c97b8e; --dim: rgba(246, 241, 231, .62); --glass: rgba(14, 13, 19, .74); --line: rgba(246, 241, 231, .32); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #020204; color: var(--paper); font-family: "Inter", system-ui, sans-serif; touch-action: none; user-select: none; -webkit-user-select: none; }
+  #c { position: fixed; inset: 0; width: 100%; height: 100%; cursor: grab; }
+  #c.drag { cursor: grabbing; }
+  .serif { font-family: "Cormorant Garamond", Georgia, serif; }
+  .hero { position: fixed; z-index: 5; left: 6.6vw; top: 11vh; pointer-events: none; }
+  .hero h1 { margin: 0; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-size: clamp(34px, 3.4vw, 56px); letter-spacing: .02em; }
+  .hero h1 span { display: inline-block; font-size: .8em; animation: tw 3s ease-in-out infinite; }
+  @keyframes tw { 50% { transform: scale(1.25) rotate(20deg); opacity: .7; } }
+  .hero p { margin: 8px 0 0 4px; font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(15px, 1.15vw, 19px); letter-spacing: .12em; color: var(--dim); }
+  .top { position: fixed; z-index: 5; top: 22px; right: 30px; display: flex; gap: 22px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 17px; letter-spacing: .08em; color: var(--dim); }
+  .top span, .top a { cursor: pointer; color: inherit; text-decoration: none; } .top span:hover, .top a:hover { color: var(--paper); }
+  a.item { display: block; color: inherit; text-decoration: none; } a.item:hover { border-color: var(--paper); }
+  .hint { position: fixed; z-index: 5; left: 50%; bottom: 4.5vh; translate: -50% 0; padding: 7px 18px; border: 1px solid var(--line); border-radius: 99px; background: rgba(10, 10, 14, .35); font-family: "Cormorant Garamond", Georgia, serif; font-size: 17px; letter-spacing: .08em; pointer-events: none; transition: opacity .5s; }
+  .glass { background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 18px 50px rgba(0, 0, 0, .5); }
+  .bubble { position: fixed; z-index: 6; padding: 6px 15px; border-radius: 99px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 18px; letter-spacing: .04em; white-space: nowrap; cursor: pointer; translate: -50% -100%; transform: scale(0); transform-origin: 50% 100%; transition: transform .45s cubic-bezier(.3, 1.7, .5, 1); background: var(--paper); color: var(--ink); box-shadow: 0 8px 24px rgba(0, 0, 0, .45); }
+  .bubble.show { transform: scale(1); }
+  .bubble i { font-style: normal; color: var(--rose); }
+  .tag { position: fixed; z-index: 7; translate: -50% -100%; width: max-content; max-width: 260px; padding: 12px 15px; pointer-events: none; transform-origin: 50% 100%; animation: tag 3.4s ease-out forwards; }
+  .tag b { display: block; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 21px; margin-bottom: 3px; }
+  .tag span { display: block; font-size: 13.5px; line-height: 1.45; color: var(--dim); }
+  @keyframes tag { 0% { transform: scale(.4); opacity: 0; } 9% { transform: scale(1.06); opacity: 1; } 15% { transform: scale(1); } 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px); } }
+  .card { position: fixed; z-index: 8; right: 6vw; top: 13vh; width: 410px; max-height: 72vh; overflow: auto; padding: 26px; opacity: 0; transform: translateY(14px) scale(.96); pointer-events: none; transition: transform .5s cubic-bezier(.3, 1.4, .5, 1), opacity .3s; }
+  .card.show { opacity: 1; transform: none; pointer-events: auto; }
+  .card .k { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--rose); }
+  .card h2 { margin: 6px 0 8px; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-size: 38px; line-height: 1; }
+  .card p { margin: 0 0 16px; line-height: 1.6; font-size: 14.5px; color: var(--dim); }
+  .card .x { position: absolute; top: 14px; right: 18px; cursor: pointer; font-size: 20px; color: var(--dim); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .grid img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; border-radius: 10px; }
+  .phones { display: flex; gap: 10px; } .phones img { width: 31%; border-radius: 12px; }
+  .item { border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; margin-bottom: 10px; } .item b { display: block; font-weight: 500; } .item span { font-size: 13.5px; color: var(--dim); }
+  .about p { margin: 0 0 12px; font-size: 14.5px; line-height: 1.65; color: var(--paper); opacity: .86; }
+  .about .meta { font-size: 12.5px; letter-spacing: .06em; color: var(--dim); margin-top: 6px; }
+  .about .link { color: var(--rose); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-style: dotted; }
+  .socials { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .socials a { padding: 6px 12px; border: 1px solid var(--line); border-radius: 99px; color: var(--paper); text-decoration: none; font-size: 13px; }
+  .socials a:hover { background: var(--paper); color: var(--ink); }
+  .go.ghost { background: none; color: var(--paper); border: 1px solid var(--line); font-family: "Inter", sans-serif; font-size: 13px; padding: 9px 14px; }
+  .card a.go { text-decoration: none; }
+  .go { display: inline-block; margin-top: 12px; padding: 8px 18px; border-radius: 99px; background: var(--paper); color: var(--ink); font-family: "Cormorant Garamond", Georgia, serif; font-size: 18px; letter-spacing: .04em; cursor: pointer; }
+  /* a paper plane tows a note with my socials across the sky */
+  .note { position: fixed; z-index: 4; left: 0; top: 0; display: flex; align-items: center; gap: 0; will-change: transform; }
+  .note .plane { width: 46px; height: 34px; flex: none; filter: drop-shadow(0 3px 4px rgba(0,0,0,.5)); }
+  .note .string { width: 34px; height: 2px; background: repeating-linear-gradient(90deg, rgba(246,241,231,.7) 0 5px, transparent 5px 8px); flex: none; }
+  .note .paper { padding: 11px 15px 12px; background: linear-gradient(#f8f2e2, #f1e8d2); color: var(--ink); border-radius: 3px;
+    box-shadow: 0 0 0 4px #fffdf7, 0 10px 24px rgba(0,0,0,.55); background-image: repeating-linear-gradient(transparent 0 21px, rgba(201,123,142,.18) 21px 22px); }
+  .note .paper b { display: block; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 15px; letter-spacing: .06em; margin-bottom: 3px; }
+  .note a { display: flex; gap: 8px; align-items: baseline; color: var(--ink); text-decoration: none; font-size: 13px; line-height: 22px; white-space: nowrap; }
+  .note a i { font-style: normal; width: 50px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 14px; letter-spacing: .04em; color: var(--rose); }
+  .note a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 720px) {
+    .note .paper { padding: 8px 11px 9px; } .note a { font-size: 12px; line-height: 19px; } .note .plane { width: 36px; height: 27px; } .note .string { width: 22px; } left: 22px; top: 70px; } .top { top: 18px; right: 18px; gap: 14px; font-size: 15px; }
+    .card { left: 14px; right: 14px; top: 64px; width: auto; max-height: 52vh; padding: 20px; }
+  }
+</style></head><body>
+<canvas id="c"></canvas>
+<nav class="top"><span onclick="openCard('work')">work</span><span onclick="openCard('about')">about</span><a href="classic.html">classic</a></nav>
+<div class="hero"><h1>hi, i'm connie <span>✦</span></h1><p>I do GTM for startups</p></div>
+<div class="bubble" id="bubble"></div>
+<div class="hint" id="hint">⟵ &nbsp;drag the moon&nbsp; ⟶</div>
+<div class="card glass" id="card"></div>
+<div class="note" id="note">
+  <div class="paper">
+    <b>find me ✦</b>
+    <a href="https://x.com/lwqconnie" target="_blank" rel="noopener"><i>X</i>@lwqconnie</a>
+    <a href="https://www.xiaohongshu.com/search_result?keyword=carinabonbon" target="_blank" rel="noopener"><i>小红书</i>@carinabonbon</a>
+    <a href="https://www.instagram.com/lwqconnie" target="_blank" rel="noopener"><i>IG</i>@lwqconnie</a>
+    <a href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank" rel="noopener"><i>LinkedIn</i>Connie Lin</a>
   </div>
+  <span class="string"></span>
+  <svg class="plane" viewBox="0 0 46 34"><path d="M2 17 L44 3 L30 31 L22 20 Z" fill="#fffdf7" stroke="#23202a" stroke-width="1.6" stroke-linejoin="round"/><path d="M44 3 L22 20 L20 29 L26 23" fill="#e9e1cf" stroke="#23202a" stroke-width="1.6" stroke-linejoin="round"/></svg>
+</div>
+<script>
+const DPR = Math.min(devicePixelRatio || 1, 2), D2R = Math.PI / 180, A = "assets/";
+const load = (src) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+let seed = 3; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
-  <header class="menubar">
-    <div class="menu-left">
-      <span class="menu-logo" id="menuLogo"></span>
-      <button class="menu-item" data-open="about">About me</button>
-      <button class="menu-item" data-open="contact">Say hi</button>
-    </div>
-    <div class="menu-right">
-      <button class="menu-item" id="soundToggle" title="Sound on/off">♪ on</button>
-      <span id="clock"></span>
-    </div>
-  </header>
+/* ---------- content ---------- */
+const LANDMARKS = [
+  { id: "work", label: "watch me cook", file: "telescope", emoji: "🔭" },
+  { id: "belo", label: "Belo", file: "rocket", emoji: "🚀" },
+  { id: "skills", label: "skills ↗ github", file: "dish", emoji: "📡" },
+  { id: "hi", label: "say hi", file: "mailbox", emoji: "📮" },
+  { id: "resume", label: "resume", file: "cv-flag", emoji: "🚩" },
+  { id: "about", label: "a little more about me", file: "about", emoji: "💌" },
+];
+// [label, troll line, motion, placeholder emoji] — same order as the toys sheet
+const TOYS = [
+  ["soccer", "i don't play. i scream at the TV, professionally.", "bounce", "⚽", "toy-soccer"],
+  ["tennis", "my serve is 60% vibes, 40% apologizing to the next court.", "bounce", "🎾"],
+  ["badminton", "not a sport. a war with feathers.", "bounce", "🏸"],
+  ["horse riding", "the horse is in charge. i'm just the intern.", "walk", "🐎"],
+  ["beach days", "sunscreen? i prefer \"golden\". (i am burnt.)", "sway", "👙"],
+  ["hiking", "mostly for the photo at the top. the hike is the toll.", "still", "🏔️"],
+  ["gaming", "\"one more game\" is my longest relationship.", "hop", "🎮"],
+  ["valorant", "omen main. i'm right behind you. (then i'm not.)", "float", "🌫️"],
+  ["league", "teemo main. yes, i'm that player. sorry about the mushrooms.", "float", "🍄"],
+  ["singing", "the shower loves me. the neighbors have notes.", "hop", "🎤"],
+  ["cars", "driving solo down to Malibu with my windows open, blasting music.", "drive", "🚙"],
+  ["sports cars", "currently manifesting one. this is the vision board.", "drive2", "🏎️"],
+  ["movies", "my favorite is The Great Gatsby. i cry every time i watch it.", "hop", "🎬"],
+  ["you", "thanks for clicking a random heart on a stranger's moon ♡", "float", "🩷"],
+  ["shopping", "it's not shopping, it's market research.", "sway", "🛍️"],
+  ["diamonds", "a girl's best KPI.", "float", "💎"],
+  ["hamsters", "i used to have a hamster, 合天下. it passed away in 2024 and was my favorite thing. this one is in remembrance ♡", "walkhop", "🐹"],
+  ["pink bows", "on everything. yes, the laptop too.", "float", "🎀"],
+  ["range shooting", "ear protection on, phone off. paper targets fear me.", "sway", "🎯"],
+  ["vibe coding", "Belo was built at 2am with Claude and snacks.", "still", "💻"],
+  ["my besties", "we hold hands even on the moon.", "walk", "👭"],
+  ["parties", "leave early? never heard of her.", "hop", "🥳"],
+  ["teddy bears", "he has seen every draft. he says nothing. legend.", "sway", "🧸"],
+  ["taking photos", "400 shots, 1 posted, 0 regrets.", "hop", "📷"],
+  ["filming", "every film on this moon started with \"wait, one more take\".", "sway", "📹"],
+  ["lollipops", "my dentist doesn't need to know about this page.", "sway", "🍭"],
+  ["bags", "i have a bag for my bags.", "sway", "👜"],
+  ["traveling", "my suitcase has more miles than i do.", "walk", "🧳"],
+  ["cats", "obviously. look who's walking on this moon.", "float", "❤️"],
+].map(([label, line, mode, emoji, file], i) => ({ label, line, mode, emoji, file: file || `toy-${String(i).padStart(2, "0")}`, ph: i * 1.7, h: 0, vh: 0, sq: 0 }));
 
-  <main id="desktop">
-    <div id="icons"></div>
-    <div id="stickers" aria-label="socials"></div>
-    <div class="hello">
-      <div class="hello-hi">hi, i'm <span id="ownerName"></span> ✿</div>
-      <div class="hello-sub" id="ownerRole"></div>
-      <div class="hello-tip">click anything · drag things around · peel a sticker</div>
-    </div>
-    <button id="pet" title="pet me"></button>
-  </main>
+const MEDIA = "media/", EMAIL = "conniew0319@gmail.com", GITHUB = "https://github.com/thisisconnielin";
+const CARDS = {
+  work: { k: "01 · films", t: "watch me cook", p: "Launch films, ads & product videos for AI startups.", h: `<div class="grid">${["teamily/choose-your-squad", "hellyeah/brand-film", "hellyeah/born-for-this", "hellyeah/2am-agent", "hellyeah/moms-fridge-pixel", "traceroot/traceroot-showcase"].map((f) => `<img src="${MEDIA}${f}.jpg" alt="">`).join("")}</div><a class="go" href="classic.html">watch all 31 →</a>` },
+  belo: { k: "02 · app", t: "Belo", p: "A live map of plans nearby. Designed, built and launched solo.", h: `<div class="phones">${[1, 2, 3].map((i) => `<img src="${MEDIA}belo/screen-${i}.jpg" alt="">`).join("")}</div><a class="go" href="https://belowith.com" target="_blank" rel="noopener">belowith.com ↗</a>` },
+  skills: { k: "03 · github", t: "skills i'm shipping", p: "GTM workflows I do by hand, packaged so anyone can install them.", h: `<a class="item" href="${GITHUB}/tripwire" target="_blank" rel="noopener"><b>Tripwire ↗</b><span>Tracks what competitors change, launch and post, and what to do about it.</span></a><a class="item" href="${GITHUB}/piltover-forge" target="_blank" rel="noopener"><b>Piltover Forge ↗</b><span>GTM runes. First up: Eyeball Collection, an evidence-backed brand report.</span></a><a class="go" href="${GITHUB}" target="_blank" rel="noopener">github ↗</a>` },
+  hi: { k: "04 · mail", t: "say hi", p: "DM for collabs, launches, GTM help, or a coffee chat.", h: `<a class="item" href="https://x.com/lwqconnie" target="_blank" rel="noopener"><b>@lwqconnie</b><span>X</span></a><a class="item" href="https://www.instagram.com/lwqconnie" target="_blank" rel="noopener"><b>@lwqconnie</b><span>Instagram</span></a><a class="item" href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank" rel="noopener"><b>Connie Lin</b><span>LinkedIn</span></a><a class="go" href="mailto:${EMAIL}" target="_blank">send a letter ✉</a>` },
+  resume: { k: "05 · cv", t: "resume", p: "Now: GTM at Teamily. Before: BD & Product Ops at Hellyeah AI, data science at HSBC and Yale. UCLA, Statistics & Data Science, 2026.",
+    h: `<div class="item"><b>want the full resume?</b><span>email me and i'll send it over ♡</span></div><a class="go" href="mailto:${EMAIL}?subject=Resume%20request&body=Hi%20Connie%2C%20could%20you%20send%20me%20your%20resume%3F" target="_blank">email me ✉</a> <span class="go ghost" onclick="navigator.clipboard.writeText('${EMAIL}');this.textContent='copied ✓'">${EMAIL}</span>` },
+  about: { k: "06 · me", t: "a little more about me", p: "",
+    h: `<div class="about">
+      <p>I'm a UCLA grad with a background in Statistics & Data Science, currently based in San Francisco and working in GTM, where I get to mix creativity, strategy, and a little bit of everything.</p>
+      <p>I'm a people person at heart. I love meeting new people, spontaneous hangouts, exploring new places, and finding little pockets of community wherever I go.</p>
+      <p>Outside of work, I'm probably traveling somewhere, taking way too many photos, trying a new restaurant, or stopping to pet every cat I see. I love good food, good company, and collecting little moments along the way. 🐈</p>
+      <p>I'm also building <span class="link" onclick="openCard('belo')">Belo</span>, a project inspired by something I genuinely care about: making it easier for people to find their people, make plans, and turn online connections into real-life experiences.</p>
+      <p>I love bringing people and ideas together, whether that's through technology, community, or a spontaneous dinner plan.</p>
+      <p>Always down for a coffee, a food adventure, a spontaneous trip, or meeting a new cat. :)</p>
+      <p class="meta">33 videos · 3 startups · 1 app in the works</p>
+      <div class="socials"><a href="https://x.com/lwqconnie" target="_blank">X @lwqconnie</a><a href="https://www.xiaohongshu.com/search_result?keyword=carinabonbon" target="_blank">小红书 @carinabonbon</a><a href="https://www.instagram.com/lwqconnie" target="_blank">IG @lwqconnie</a><a href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank">LinkedIn Connie Lin</a></div></div>` },
+};
 
-  <div id="windows"></div>
+/* ---------- placeholders (used until Codex's assets are in assets/trim/) ---------- */
+function emojiSticker(e, size = 160) {
+  const c = document.createElement("canvas"); c.width = c.height = size; const x = c.getContext("2d");
+  x.textAlign = "center"; x.textBaseline = "middle"; x.font = `${size * .62}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
+  x.fillStyle = "#fff"; for (let a = 0; a < 6.28; a += .4) x.fillText(e, size / 2 + Math.cos(a) * size * .04, size / 2 + Math.sin(a) * size * .04 + size * .02);
+  x.globalCompositeOperation = "source-in"; x.fillRect(0, 0, size, size); x.globalCompositeOperation = "source-over";
+  x.fillText(e, size / 2, size / 2 + size * .02);
+  return c;
+}
+function placeholderMoon(n) {
+  const c = document.createElement("canvas"); c.width = c.height = n; const x = c.getContext("2d"), r = n / 2;
+  const g = x.createRadialGradient(r, r, 0, r, r, r); g.addColorStop(0, "#8f8c8a"); g.addColorStop(1, "#6f6c6b");
+  x.fillStyle = g; x.beginPath(); x.arc(r, r, r, 0, 6.283); x.fill(); x.save(); x.clip();
+  for (let i = 0; i < 9000; i++) { x.fillStyle = rnd() < .5 ? "rgba(0,0,0,.08)" : "rgba(255,255,255,.07)"; x.fillRect(rnd() * n, rnd() * n, 1 + rnd() * 3, 1 + rnd() * 3); }
+  for (let i = 0; i < 160; i++) {
+    const a = rnd() * 6.283, d = r * Math.sqrt(rnd()), cr = 4 + rnd() ** 3 * r * .09, px = r + Math.cos(a) * d, py = r + Math.sin(a) * d;
+    const cg = x.createRadialGradient(px - cr * .25, py - cr * .25, cr * .1, px, py, cr);
+    cg.addColorStop(0, "rgba(40,38,38,.35)"); cg.addColorStop(.75, "rgba(60,58,58,.18)"); cg.addColorStop(.92, "rgba(230,226,220,.22)"); cg.addColorStop(1, "rgba(0,0,0,0)");
+    x.fillStyle = cg; x.beginPath(); x.arc(px, py, cr, 0, 6.283); x.fill();
+  }
+  x.restore(); return c;
+}
 
-  <script src="data.js?v=12"></script>
-  <script src="app.js?v=12"></script>
-</body>
-</html>
+/* ---------- scene ---------- */
+const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+const bubble = document.getElementById("bubble"), card = document.getElementById("card"), hint = document.getElementById("hint");
+let W, H, R, cx, cy, ZONE, sizes, stars, moonImg, galaxyImg, cat = [];
+
+function build() {
+  W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR;
+  const mob = W <= 720, mid = !mob && W < 1100;
+  R = mob ? Math.max(W * 1.5, 560) : Math.max(W * .62, 700);
+  cx = W / 2; cy = H * (mob ? .7 : .7) + R;
+  sizes = mob ? { cat: 104, land: 92, toy: 44, depth: [34, 190] } : mid ? { cat: 124, land: 108, toy: 52, depth: [40, 230] } : { cat: 140, land: 124, toy: 60, depth: [46, 280] };
+  ZONE = Math.asin(Math.min(.9, (mob ? 150 : 240) / R)) / D2R; // a project this close to the cat shows its bubble
+  seed = 9;
+  stars = Array.from({ length: Math.round(W * H / 2200) }, () => ({ x: rnd() * W, y: rnd() * H * .85, r: rnd() < .92 ? .5 + rnd() * .6 : 1 + rnd(), a: .25 + rnd() * .75, c: ["#ffffff", "#ffffff", "#ffe9c9", "#cfdcff"][rnd() * 4 | 0], p: rnd() * 6 }));
+  LANDMARKS.forEach((l, i) => (l.a = i * 360 / LANDMARKS.length));
+  TOYS.forEach((t, i) => {
+    t.a = t.home = (i + .5) * 360 / TOYS.length + 3;
+    t.depth = sizes.depth[0] + ((i * 37) % 100) / 100 * (sizes.depth[1] - sizes.depth[0]); // scattered over the surface, not only the horizon
+  });
+}
+
+/* ---------- motion ---------- */
+// the cat is always walking: the moon keeps turning under her. dragging steers / speeds it up, then it eases back to a stroll
+let theta = 0, vel = 0, dir = -1, near = -1, dragging = false, moved = 0, lastX = 0, lastT = 0, dragV = 0, facing = 1, stride = 0;
+const wrap = (d) => ((d % 360) + 540) % 360 - 180;
+const stroll = () => 38 / R / D2R; // walking speed, deg/s
+const at = (a, rr) => { const p = (theta + a) * D2R; return [cx + Math.sin(p) * rr, cy - Math.cos(p) * rr, p]; };
+const closest = () => { let b = -1, bd = ZONE; LANDMARKS.forEach((l, i) => { const d = Math.abs(wrap(l.a + theta)); if (d < bd) { bd = d; b = i; } }); return b; };
+
+function updateToys(dt, t) {
+  const dpp = 1 / R / D2R;
+  for (const it of TOYS) {
+    if (it.mode === "drive") it.a += 30 * dpp * dt;
+    if (it.mode === "drive2") it.a -= 55 * dpp * dt;
+    if (it.mode === "walk" || it.mode === "walkhop") { it.dir = it.dir || 1; it.a += it.dir * 12 * dpp * dt; if (Math.abs(wrap(it.a - it.home)) > 4) it.dir *= -1; }
+    if (it.mode === "float") it.h = 16 + Math.sin(t * 1.5 + it.ph) * 6;
+    else {
+      const auto = it.mode === "bounce" ? 1 : (it.mode === "hop" || it.mode === "walkhop") && Math.sin(t * .9 + it.ph) > .985 ? 1 : 0;
+      if (it.h <= 0 && it.vh <= 0) { if (it.vh < -60) it.sq = .12; it.h = 0; it.vh = auto ? (it.mode === "bounce" ? 230 + (it.ph % 1) * 80 : 170) : 0; }
+      it.vh -= 900 * dt; it.h = Math.max(0, it.h + it.vh * dt);
+    }
+    it.sq = Math.max(0, it.sq - dt);
+    it.wob = it.mode === "sway" ? Math.sin(t * 2 + it.ph) * .08 : it.mode === "bounce" && it.h > 0 ? Math.sin(t * 7 + it.ph) * .3 : 0;
+  }
+}
+// sticker + a soft contact shadow on the ground
+function sticker(img, a, rr, hCss, lift = 0, wob = 0, sx = 1, sy = 1) {
+  const p = (theta + a) * D2R; if (Math.cos(p) < .08) return null;
+  const w = hCss * img.width / img.height, gx = cx + Math.sin(p) * rr, gy = cy - Math.cos(p) * rr;
+  ctx.save(); ctx.translate(gx, gy); ctx.rotate(p);
+  const sh = Math.max(.15, .45 - lift / 120);
+  ctx.fillStyle = `rgba(0,0,0,${sh})`; ctx.filter = "blur(4px)";
+  ctx.beginPath(); ctx.ellipse(w * .18, 2, w * .48, Math.max(3, hCss * .06), 0, 0, 6.283); ctx.fill(); ctx.filter = "none";
+  ctx.translate(0, -lift); ctx.rotate(wob); ctx.scale(sx, sy);
+  ctx.shadowColor = "rgba(0,0,0,.35)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+  ctx.drawImage(img, -w / 2, -hCss, w, hCss); ctx.restore();
+  return [gx + Math.sin(p) * (hCss / 2 + lift), gy - Math.cos(p) * (hCss / 2 + lift), w, hCss];
+}
+function draw(t) {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.fillStyle = "#020204"; ctx.fillRect(0, 0, W, H);
+  for (const s of stars) { ctx.globalAlpha = s.a * (.75 + .25 * Math.sin(t * 1.2 + s.p)); ctx.fillStyle = s.c; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, 6.283); ctx.fill(); }
+  ctx.globalAlpha = 1;
+  if (galaxyImg) {
+    const mob = W <= 720, gw = mob ? W * .62 : Math.min(W * .3, 560), gh = gw * galaxyImg.height / galaxyImg.width;
+    ctx.drawImage(galaxyImg, mob ? W * .34 : W - gw - W * .02, mob ? H * .2 : H * .01, gw, gh);
+  }
+  // moon + static lighting so it reads as a sphere while it spins
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(theta * D2R); ctx.drawImage(moonImg, -R, -R, R * 2, R * 2); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.283); ctx.clip();
+  const lg = ctx.createLinearGradient(0, cy - R, 0, cy - R + H * .45); lg.addColorStop(0, "rgba(255,255,255,.10)"); lg.addColorStop(.12, "rgba(255,255,255,0)"); lg.addColorStop(1, "rgba(0,0,0,.35)");
+  ctx.fillStyle = lg; ctx.fillRect(0, 0, W, H); ctx.restore();
+  // toys sit on the surface at different depths; projects stand on the horizon
+  for (const it of TOYS) it.hit = sticker(it.img, it.a, R - it.depth, sizes.toy * (it.img.height > it.img.width * 1.4 ? 1.2 : 1), it.h, it.wob, it.sq ? 1.15 : 1, it.sq ? .85 : 1);
+  LANDMARKS.forEach((l) => { const k = l.pop > 0 ? 1 + Math.sin(l.pop * 18) * l.pop * .35 : 1; l.hit = sticker(l.img, l.a, R - 6, sizes.land, 0, 0, 2 - k, k); });
+  // cat: every step is a little bounce — squash when she lands, stretch in the air, lean side to side
+  const f = cat[0], ch = sizes.cat, cw = ch * f.width / f.height;
+  const speed = Math.abs(dragging ? dragV : vel) / stroll();          // 1 = strolling
+  const ph = stride % 1, air = Math.sin(ph * Math.PI);                 // 0 on the ground → 1 at the top of the hop
+  const hop = air * (7 + Math.min(speed, 4) * 4);
+  const land = Math.max(0, 1 - air / .28);                             // near the ground → squash
+  const sx = 1 + land * .14 - air * .05, sy = 1 - land * .16 + air * .06;
+  const lean = Math.sin(stride * Math.PI) * .07;
+  ctx.save(); ctx.translate(cx, cy - R - 4);
+  ctx.fillStyle = `rgba(0,0,0,${.42 - air * .18})`; ctx.filter = "blur(4px)"; ctx.beginPath(); ctx.ellipse(cw * .08, 6, cw * (.42 - air * .08), 6, 0, 0, 6.283); ctx.fill(); ctx.filter = "none";
+  ctx.translate(0, -hop); ctx.rotate(lean * facing); ctx.scale(facing * sx, sy);
+  ctx.shadowColor = "rgba(0,0,0,.35)"; ctx.shadowBlur = 8; ctx.drawImage(f, -cw / 2, -ch, cw, ch); ctx.restore();
+}
+let prev = performance.now();
+function tick(now) {
+  const dt = Math.min(.033, (now - prev) / 1000), t = now / 1000; prev = now;
+  if (!dragging) {
+    const want = dir * stroll() * (card.classList.contains("show") ? .35 : 1);
+    vel += (want - vel) * Math.min(1, dt * 1.6); theta += vel * dt;
+  }
+  const v = dragging ? dragV : vel;
+  if (Math.abs(v) > stroll() * .2) facing = v < 0 ? 1 : -1;            // ground moving left → she walks right
+  stride += dt * (1.9 + Math.min(Math.abs(v) / stroll(), 5) * .5);
+  LANDMARKS.forEach((l) => (l.pop = Math.max(0, (l.pop || 0) - dt * 1.4)));
+  const n = closest();
+  if (n !== near) { near = n; if (n >= 0) { LANDMARKS[n].pop = .7; bubble.innerHTML = `${LANDMARKS[n].label} &nbsp;<i>open</i>`; bubble.classList.add("show"); } else bubble.classList.remove("show"); }
+  if (near >= 0) { const l = LANDMARKS[near], [x, y] = at(l.a, R - 6 + sizes.land + 14); bubble.style.left = x + "px"; bubble.style.top = y + "px"; }
+  flyNote(dt, t);
+  updateToys(dt, t); draw(t); requestAnimationFrame(tick);
+}
+const note = document.getElementById("note");
+let noteX = -40, noteHold = false;
+note.addEventListener("pointerenter", () => (noteHold = true)); note.addEventListener("pointerleave", () => (noteHold = false));
+note.addEventListener("touchstart", () => { noteHold = true; clearTimeout(note.t); note.t = setTimeout(() => (noteHold = false), 4000); }, { passive: true });
+function flyNote(dt, t) {
+  const w = note.offsetWidth, mob = W <= 720;
+  if (!noteHold) noteX += (mob ? 22 : 30) * dt;
+  if (noteX > W + 20) noteX = -w - 20;
+  const y = H * (mob ? .44 : .36) + Math.sin(t * .9) * 12 + Math.sin(t * 2.3) * 3;
+  note.style.transform = `translate(${noteX}px, ${y}px) rotate(${Math.sin(t * .8) * 3}deg)`;
+}
+bubble.onclick = () => near >= 0 && openCard(LANDMARKS[near].id);
+function openCard(id) { const c = CARDS[id]; card.innerHTML = `<span class="x" onclick="closeCard()">×</span><div class="k">${c.k}</div><h2>${c.t}</h2>${c.p ? `<p>${c.p}</p>` : ""}${c.h}`; card.classList.add("show"); hint.style.opacity = 0; }
+function closeCard() { card.classList.remove("show"); }
+function tag(it, x, y) {
+  document.querySelectorAll(".tag").forEach((e) => e.remove());
+  const e = document.createElement("div"); e.className = "tag glass"; e.innerHTML = `<b>i love ${it.label}</b><span>${it.line}</span>`;
+  e.style.left = Math.max(140, Math.min(W - 140, x)) + "px"; e.style.top = Math.max(150, y) + "px"; document.body.append(e); setTimeout(() => e.remove(), 3400);
+}
+function tap(px, py) {
+  let best = null, bd = 1e9;
+  const test = (o, kind) => { if (!o.hit) return; const [x, y, w, h] = o.hit, d = Math.hypot(px - x, py - y); if (d < Math.max(w, h, 44) * .7 && d < bd) { bd = d; best = { o, kind }; } };
+  TOYS.forEach((t) => test(t, "toy")); LANDMARKS.forEach((l) => test(l, "land"));
+  if (!best) return;
+  if (best.kind === "toy") { const it = best.o; it.vh = 330; it.h = Math.max(it.h, .1); tag(it, best.o.hit[0], best.o.hit[1] - best.o.hit[3] / 2 - 26); }
+  else openCard(best.o.id);
+}
+let downX = 0, downY = 0;
+cv.addEventListener("pointerdown", (e) => { dragging = true; moved = 0; downX = lastX = e.clientX; downY = e.clientY; lastT = performance.now(); dragV = 0; cv.classList.add("drag"); cv.setPointerCapture(e.pointerId); });
+cv.addEventListener("pointermove", (e) => {
+  if (!dragging) return;
+  const dx = e.clientX - lastX, now = performance.now();
+  moved = Math.max(moved, Math.hypot(e.clientX - downX, e.clientY - downY)); if (moved < 6) return;
+  const d = dx / R / D2R * 1.1; theta += d; dragV = .8 * dragV + .2 * (d / Math.max(.001, (now - lastT) / 1000));
+  lastX = e.clientX; lastT = now; closeCard(); hint.style.opacity = 0;
+});
+const end = (e) => {
+  if (!dragging) return; dragging = false; cv.classList.remove("drag");
+  if (moved < 6) { dragV = 0; tap(e.clientX, e.clientY); return; }
+  vel = dragV; if (Math.abs(dragV) > stroll() * .3) dir = Math.sign(dragV);
+};
+cv.addEventListener("pointerup", end); cv.addEventListener("pointercancel", end);
+addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight") { dir = -1; vel = -stroll() * 5; } if (e.key === "ArrowLeft") { dir = 1; vel = stroll() * 5; }
+  if (e.key === "Enter" && near >= 0) openCard(LANDMARKS[near].id); if (e.key === "Escape") closeCard();
+});
+addEventListener("wheel", (e) => { const d = -(e.deltaX || e.deltaY) * .045; theta += d; if (d) dir = Math.sign(d); }, { passive: true });
+addEventListener("resize", build);
+
+// load Codex's assets; anything missing falls back to a placeholder so the page always works
+(async () => {
+  const [moon, galaxy, galaxyPh, ...catFrames] = await Promise.all([load(A + "moon.webp"), load(A + "galaxy.png"), Promise.resolve(null), ...[0, 1, 2, 3, 4].map((i) => load(A + `cat-${i}.png`))]);
+  moonImg = moon || placeholderMoon(2000); galaxyImg = galaxy || galaxyPh;
+  cat = catFrames.filter(Boolean); if (!cat.length) cat = [emojiSticker("🐱", 220)];
+  await Promise.all([...LANDMARKS, ...TOYS].map(async (o) => { o.img = (await load(A + o.file + ".png")) || emojiSticker(o.emoji); }));
+  build(); theta = -LANDMARKS[0].a + 14; vel = dir * stroll(); requestAnimationFrame(tick);
+})();
+</script></body></html>

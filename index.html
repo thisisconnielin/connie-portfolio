@@ -48,12 +48,11 @@
   /* a paper plane tows a note with my socials across the sky */
   .note { position: fixed; z-index: 4; left: 0; top: 0; display: flex; align-items: center; gap: 0; will-change: transform; }
   .note .plane { width: 46px; height: 34px; flex: none; filter: drop-shadow(0 3px 4px rgba(0,0,0,.5)); }
-  .note .string { width: 34px; height: 2px; background: repeating-linear-gradient(90deg, rgba(246,241,231,.7) 0 5px, transparent 5px 8px); flex: none; }
-  .note .paper { padding: 11px 15px 12px; background: linear-gradient(#f8f2e2, #f1e8d2); color: var(--ink); border-radius: 3px;
-    box-shadow: 0 0 0 4px #fffdf7, 0 10px 24px rgba(0,0,0,.55); background-image: repeating-linear-gradient(transparent 0 21px, rgba(201,123,142,.18) 21px 22px); }
-  .note .paper b { display: block; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 15px; letter-spacing: .06em; margin-bottom: 3px; }
-  .note a { display: flex; gap: 8px; align-items: baseline; color: var(--ink); text-decoration: none; font-size: 13px; line-height: 22px; white-space: nowrap; }
-  .note a i { font-style: normal; width: 50px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 14px; letter-spacing: .04em; color: var(--rose); }
+  .note .string { width: 34px; height: 2px; background: repeating-linear-gradient(90deg, rgba(255,255,255,.8) 0 5px, transparent 5px 8px); flex: none; }
+  .note .paper { padding: 11px 15px 12px; background: none; color: #fff; border: 1.5px solid rgba(255,255,255,.85); border-radius: 6px; text-shadow: 0 1px 6px rgba(0,0,0,.8); }
+  .note .paper b { color: #ff9cc2; display: block; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 600; font-size: 15px; letter-spacing: .06em; margin-bottom: 3px; }
+  .note a { display: flex; gap: 8px; align-items: baseline; color: #fff; text-decoration: none; font-size: 13px; line-height: 22px; white-space: nowrap; }
+  .note a i { font-style: normal; width: 50px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 14px; letter-spacing: .04em; color: #ff9cc2; }
   .note a:hover { text-decoration: underline; text-underline-offset: 3px; }
   @media (max-width: 720px) {
     .note .paper { padding: 8px 11px 9px; } .note a { font-size: 12px; line-height: 19px; } .note .plane { width: 36px; height: 27px; } .note .string { width: 22px; } left: 22px; top: 70px; } .top { top: 18px; right: 18px; gap: 14px; font-size: 15px; }
@@ -61,7 +60,7 @@
   }
 </style></head><body>
 <canvas id="c"></canvas>
-<nav class="top"><span onclick="openCard('work')">work</span><span onclick="openCard('about')">about</span></nav>
+<nav class="top"><span onclick="openCard('work')">work</span><span onclick="openCard('about')">about</span><span id="snd" onclick="toggleSound()">♪ on</span></nav>
 <div class="hero"><h1>hi, i'm connie <span>✦</span></h1><p>I do GTM for startups</p></div>
 <div class="bubble" id="bubble"></div>
 <div class="hint" id="hint">⟵ &nbsp;drag the moon&nbsp; ⟶</div>
@@ -69,13 +68,13 @@
 <div class="note" id="note">
   <div class="paper">
     <b>find me ✦</b>
-    <a href="https://x.com/lwqconnie" target="_blank" rel="noopener"><i>X</i>@lwqconnie</a>
-    <a href="https://www.xiaohongshu.com/search_result?keyword=carinabonbon" target="_blank" rel="noopener"><i>小红书</i>@carinabonbon</a>
+    <a href="https://x.com/itspeenut" target="_blank" rel="noopener"><i>X</i>@itspeenut</a>
+    <a href="https://www.xiaohongshu.com/search_result?keyword=itspeenut" target="_blank" rel="noopener"><i>小红书</i>@itspeenut</a>
     <a href="https://www.instagram.com/lwqconnie" target="_blank" rel="noopener"><i>IG</i>@lwqconnie</a>
     <a href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank" rel="noopener"><i>LinkedIn</i>Connie Lin</a>
   </div>
   <span class="string"></span>
-  <svg class="plane" viewBox="0 0 46 34"><path d="M2 17 L44 3 L30 31 L22 20 Z" fill="#fffdf7" stroke="#23202a" stroke-width="1.6" stroke-linejoin="round"/><path d="M44 3 L22 20 L20 29 L26 23" fill="#e9e1cf" stroke="#23202a" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  <svg class="plane" viewBox="0 0 46 34"><path d="M2 17 L44 3 L30 31 L22 20 Z" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M44 3 L22 20 L20 29 L26 23" fill="none" stroke="#ff9cc2" stroke-width="1.6" stroke-linejoin="round"/></svg>
 </div>
 <script>
 const DPR = Math.min(devicePixelRatio || 1, 2), D2R = Math.PI / 180, A = "assets/";
@@ -129,7 +128,7 @@ const CARDS = {
   work: { k: "01 · films", t: "watch me cook", p: "Launch films, ads & product videos for AI startups. Tap one to play.", h: `<div class="player" id="player"></div><div class="grid">${["teamily/choose-your-squad", "hellyeah/brand-film", "hellyeah/born-for-this", "hellyeah/2am-agent", "hellyeah/moms-fridge-pixel", "traceroot/traceroot-showcase"].map((f) => `<img src="${MEDIA}${f}.jpg" alt="" onclick="playFilm('${f}')">`).join("")}</div>` },
   belo: { k: "02 · app", t: "Belo", p: "A live map of plans nearby. Designed, built and launched solo.", h: `<div class="phones">${[1, 2, 3].map((i) => `<img src="${MEDIA}belo/screen-${i}.jpg" alt="">`).join("")}</div><a class="go" href="https://belowith.com" target="_blank" rel="noopener">belowith.com ↗</a>` },
   skills: { k: "03 · github", t: "skills i'm shipping", p: "GTM workflows I do by hand, packaged so anyone can install them.", h: `<a class="item" href="${GITHUB}/tripwire" target="_blank" rel="noopener"><b>Tripwire ↗</b><span>Tracks what competitors change, launch and post, and what to do about it.</span></a><a class="item" href="${GITHUB}/piltover-forge" target="_blank" rel="noopener"><b>Piltover Forge ↗</b><span>GTM runes. First up: Eyeball Collection, an evidence-backed brand report.</span></a><a class="go" href="${GITHUB}" target="_blank" rel="noopener">github ↗</a>` },
-  hi: { k: "04 · mail", t: "say hi", p: "DM for collabs, launches, GTM help, or a coffee chat.", h: `<a class="item" href="https://x.com/lwqconnie" target="_blank" rel="noopener"><b>@lwqconnie</b><span>X</span></a><a class="item" href="https://www.instagram.com/lwqconnie" target="_blank" rel="noopener"><b>@lwqconnie</b><span>Instagram</span></a><a class="item" href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank" rel="noopener"><b>Connie Lin</b><span>LinkedIn</span></a><a class="go" href="mailto:${EMAIL}" target="_blank">send a letter ✉</a>` },
+  hi: { k: "04 · mail", t: "say hi", p: "DM for collabs, launches, GTM help, or a coffee chat.", h: `<a class="item" href="https://x.com/itspeenut" target="_blank" rel="noopener"><b>@itspeenut</b><span>X</span></a><a class="item" href="https://www.instagram.com/lwqconnie" target="_blank" rel="noopener"><b>@lwqconnie</b><span>Instagram</span></a><a class="item" href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank" rel="noopener"><b>Connie Lin</b><span>LinkedIn</span></a><a class="go" href="mailto:${EMAIL}" target="_blank">send a letter ✉</a>` },
   resume: { k: "05 · cv", t: "resume", p: "Now: GTM at Teamily. Before: BD & Product Ops at Hellyeah AI, data science at HSBC and Yale. UCLA, Statistics & Data Science, 2026.",
     h: `<div class="item"><b>want the full resume?</b><span>email me and i'll send it over ♡</span></div><a class="go" href="mailto:${EMAIL}?subject=Resume%20request&body=Hi%20Connie%2C%20could%20you%20send%20me%20your%20resume%3F" target="_blank">email me ✉</a> <span class="go ghost" onclick="navigator.clipboard.writeText('${EMAIL}');this.textContent='copied ✓'">${EMAIL}</span>` },
   about: { k: "06 · me", t: "a little more about me", p: "",
@@ -141,7 +140,7 @@ const CARDS = {
       <p>I love bringing people and ideas together, whether that's through technology, community, or a spontaneous dinner plan.</p>
       <p>Always down for a coffee, a food adventure, a spontaneous trip, or meeting a new cat. :)</p>
       <p class="meta">33 videos · 3 startups · 1 app in the works</p>
-      <div class="socials"><a href="https://x.com/lwqconnie" target="_blank">X @lwqconnie</a><a href="https://www.xiaohongshu.com/search_result?keyword=carinabonbon" target="_blank">小红书 @carinabonbon</a><a href="https://www.instagram.com/lwqconnie" target="_blank">IG @lwqconnie</a><a href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank">LinkedIn Connie Lin</a></div></div>` },
+      <div class="socials"><a href="https://x.com/itspeenut" target="_blank">X @itspeenut</a><a href="https://www.xiaohongshu.com/search_result?keyword=itspeenut" target="_blank">小红书 @itspeenut</a><a href="https://www.instagram.com/lwqconnie" target="_blank">IG @lwqconnie</a><a href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank">LinkedIn Connie Lin</a></div></div>` },
 };
 
 /* ---------- placeholders (used until Codex's assets are in assets/trim/) ---------- */
@@ -284,7 +283,7 @@ function flyNote(dt, t) {
   note.style.transform = `translate(${noteX}px, ${y}px) rotate(${Math.sin(t * .8) * 3}deg)`;
 }
 bubble.onclick = () => near >= 0 && openCard(LANDMARKS[near].id);
-function openCard(id) { const c = CARDS[id]; card.innerHTML = `<span class="x" onclick="closeCard()">×</span><div class="k">${c.k}</div><h2>${c.t}</h2>${c.p ? `<p>${c.p}</p>` : ""}${c.h}`; card.classList.add("show"); hint.style.opacity = 0; }
+function openCard(id) { sfx("open"); const c = CARDS[id]; card.innerHTML = `<span class="x" onclick="closeCard()">×</span><div class="k">${c.k}</div><h2>${c.t}</h2>${c.p ? `<p>${c.p}</p>` : ""}${c.h}`; card.classList.add("show"); hint.style.opacity = 0; }
 // films play right inside the card
 function playFilm(f) {
   const p = document.getElementById("player");
@@ -302,7 +301,7 @@ function tap(px, py) {
   const test = (o, kind) => { if (!o.hit) return; const [x, y, w, h] = o.hit, d = Math.hypot(px - x, py - y); if (d < Math.max(w, h, 44) * .7 && d < bd) { bd = d; best = { o, kind }; } };
   TOYS.forEach((t) => test(t, "toy")); LANDMARKS.forEach((l) => test(l, "land"));
   if (!best) return;
-  if (best.kind === "toy") { const it = best.o; it.vh = 330; it.h = Math.max(it.h, .1); tag(it, best.o.hit[0], best.o.hit[1] - best.o.hit[3] / 2 - 26); }
+  if (best.kind === "toy") { const it = best.o; sfx(toySound(it.mode)); it.vh = 330; it.h = Math.max(it.h, .1); tag(it, best.o.hit[0], best.o.hit[1] - best.o.hit[3] / 2 - 26); }
   else openCard(best.o.id);
 }
 let downX = 0, downY = 0;
@@ -326,6 +325,60 @@ addEventListener("keydown", (e) => {
 });
 addEventListener("wheel", (e) => { const d = -(e.deltaX || e.deltaY) * .045; theta += d; if (d) dir = Math.sign(d); }, { passive: true });
 addEventListener("resize", build);
+
+/* ---------- sound: a soft moon lullaby + little sounds for the stickers, all made live with WebAudio (no audio files) ---------- */
+let AC = null, OUT = null, VERB = null, soundOn = localStorage.getItem("moon-sound") !== "off", nextChord = 0, nextNote = 0, chordIx = 0;
+const NOTE = (n) => 440 * 2 ** ((n - 69) / 12);
+// slow, dreamy progression in C major pentatonic land: Cmaj9 → Am9 → Fmaj9 → Gsus
+const CHORDS = [[48, 55, 64, 71, 74], [45, 52, 60, 67, 71], [41, 48, 57, 64, 67], [43, 50, 60, 62, 69]];
+const BELLS = [72, 74, 76, 79, 81, 84, 86, 88];
+function audioInit() {
+  if (AC) return;
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  OUT = AC.createGain(); OUT.gain.value = soundOn ? .9 : 0; OUT.connect(AC.destination);
+  // reverb: a few seconds of decaying noise → wide, spacey tail
+  VERB = AC.createConvolver(); const len = AC.sampleRate * 4, ir = AC.createBuffer(2, len, AC.sampleRate);
+  for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len) ** 2.6; }
+  VERB.buffer = ir; const wet = AC.createGain(); wet.gain.value = .55; VERB.connect(wet).connect(OUT);
+  nextChord = nextNote = AC.currentTime + .1;
+  setInterval(schedule, 120);
+}
+function voice(freq, t, dur, { type = "sine", vol = .05, attack = .01, dry = .5, glide = 0 } = {}) {
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t); if (glide) o.frequency.exponentialRampToValueAtTime(freq * glide, t + dur * .6);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + attack); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g); const d = AC.createGain(); d.gain.value = dry; g.connect(d).connect(OUT); g.connect(VERB);
+  o.start(t); o.stop(t + dur + .05);
+}
+function schedule() {
+  const now = AC.currentTime;
+  while (nextChord < now + .5) {        // pad: a long, soft chord every 8s
+    CHORDS[chordIx % 4].forEach((n, i) => { voice(NOTE(n), nextChord, 9.5, { type: "triangle", vol: .012, attack: 2.5, dry: .35 }); voice(NOTE(n) * 1.003, nextChord + .02 * i, 9.5, { vol: .01, attack: 3, dry: .3 }); });
+    chordIx++; nextChord += 8;
+  }
+  while (nextNote < now + .5) {         // music box: sparse notes from the current chord colour
+    if (Math.random() < .55) { const n = BELLS[Math.random() * BELLS.length | 0]; voice(NOTE(n), nextNote, 2.6, { vol: .022, dry: .45 }); voice(NOTE(n) * 3, nextNote, .9, { vol: .004, dry: .3 }); }
+    nextNote += [.6, .9, 1.2, 1.8][Math.random() * 4 | 0];
+  }
+}
+const SFX = {
+  bounce: () => voice(220, AC.currentTime, .35, { type: "triangle", vol: .09, glide: 2.4 }),                                // boing
+  float: () => [0, .07, .14].forEach((d, i) => voice(NOTE(88 + i * 3), AC.currentTime + d, 1.2, { vol: .04 })),          // sparkle
+  drive: () => [0, .16].forEach((d) => voice(392, AC.currentTime + d, .12, { type: "square", vol: .025, dry: .8 })),     // beep beep
+  hop: () => voice(600, AC.currentTime, .12, { vol: .08, glide: 1.8, dry: .8 }),                                          // pop
+  soft: () => voice(NOTE(76), AC.currentTime, .25, { type: "triangle", vol: .06, dry: .7 }),                              // little woodblock
+  open: () => [72, 76, 79, 84].forEach((n, i) => voice(NOTE(n), AC.currentTime + i * .06, 1.6, { vol: .035 })),          // bell glissando
+};
+const toySound = (mode) => ({ bounce: "bounce", float: "float", drive: "drive", drive2: "drive", hop: "hop", walkhop: "hop" })[mode] || "soft";
+function sfx(name) { if (AC && soundOn) SFX[name](); }
+function toggleSound() {
+  soundOn = !soundOn; localStorage.setItem("moon-sound", soundOn ? "on" : "off");
+  document.getElementById("snd").textContent = soundOn ? "♪ on" : "♪ off";
+  audioInit(); AC.resume(); OUT.gain.setTargetAtTime(soundOn ? .9 : 0, AC.currentTime, .3);
+}
+document.getElementById("snd").textContent = soundOn ? "♪ on" : "♪ off";
+// browsers only allow sound after a click/tap: start the music on the first one
+addEventListener("pointerdown", () => { audioInit(); AC.resume(); }, { once: true });
 
 // load Codex's assets; anything missing falls back to a placeholder so the page always works
 (async () => {

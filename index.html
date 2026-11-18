@@ -33,7 +33,7 @@
   .card .x { position: absolute; top: 14px; right: 18px; cursor: pointer; font-size: 20px; color: var(--dim); }
   .player video { width: 100%; display: block; border-radius: 12px; margin-bottom: 12px; background: #000; }
   .grid img { cursor: pointer; transition: transform .2s; } .grid img:hover { transform: scale(1.03); }
-  .films figure { margin: 0; cursor: pointer; } .films figcaption { margin-top: 5px; font-size: 12px; color: var(--dim); }
+  .films figure { margin: 0; cursor: pointer; } .films figure.on img { outline: 2px solid var(--rose); outline-offset: 2px; } .films figure.on figcaption { color: var(--rose); } .films figcaption { margin-top: 5px; font-size: 12px; color: var(--dim); }
   .item.dm { margin-top: 14px; cursor: pointer; } .item.dm b { color: var(--rose); } .item.dm:hover { border-color: var(--paper); }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .grid img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; border-radius: 10px; }
   .phones { display: flex; gap: 10px; } .phones img { width: 31%; border-radius: 12px; }
@@ -130,7 +130,7 @@ const CARDS = {
   work: { k: "01 · films", t: "watch me cook", p: "Launch films and product videos for AI startups. Tap one to play.", h: `<div class="player" id="player"></div><div class="grid films">${[
       ["films/hellyeah-launch", "Hellyeah · launch film"], ["films/hellyeah-demo-1-0", "Hellyeah · demo 1.0"], ["films/teamily-site-demo", "Teamily · site demo"],
       ["films/traceroot-introducing", "TraceRoot · introducing"], ["films/befreed-branding", "BeFreed · brand film"],
-    ].map(([f, n]) => `<figure onclick="playFilm('${f}')"><img src="${MEDIA}${f}.jpg" alt=""><figcaption>${n}</figcaption></figure>`).join("")}</div>
+    ].map(([f, n]) => `<figure data-f="${f}" onclick="playFilm('${f}')"><img src="${MEDIA}${f}.jpg" alt=""><figcaption>${n}</figcaption></figure>`).join("")}</div>
     <div class="item dm" onclick="openCard('hi')"><b>dm for more ✦</b><span>collabs, or prompt advice for your own launch film</span></div>` },
   belo: { k: "02 · app", t: "Belo", p: "A live map of plans nearby. Designed, built and launched solo.", h: `<div class="phones">${[1, 2, 3].map((i) => `<img src="${MEDIA}belo/screen-${i}.jpg" alt="">`).join("")}</div><a class="go" href="https://belowith.com" target="_blank" rel="noopener">belowith.com ↗</a>` },
   skills: { k: "03 · github", t: "skills i'm shipping", p: "GTM workflows I do by hand, packaged so anyone can install them.", h: `<a class="item" href="${GITHUB}/tripwire" target="_blank" rel="noopener"><b>Tripwire ↗</b><span>Tracks what competitors change, launch and post, and what to do about it.</span></a><a class="item" href="${GITHUB}/piltover-forge" target="_blank" rel="noopener"><b>Piltover Forge ↗</b><span>GTM runes. First up: Eyeball Collection, an evidence-backed brand report.</span></a><a class="go" href="${GITHUB}" target="_blank" rel="noopener">github ↗</a>` },
@@ -292,11 +292,27 @@ bubble.onclick = () => near >= 0 && openCard(LANDMARKS[near].id);
 function openCard(id) { sfx("open"); const c = CARDS[id]; card.innerHTML = `<span class="x" onclick="closeCard()">×</span><div class="k">${c.k}</div><h2>${c.t}</h2>${c.p ? `<p>${c.p}</p>` : ""}${c.h}`; card.classList.add("show"); hint.style.opacity = 0; }
 // films play right inside the card
 function playFilm(f) {
+  // one video element per card: swap its source and call play() inside the tap, so every film plays (not just the first)
   const p = document.getElementById("player");
-  p.innerHTML = `<video src="${MEDIA}${f}.mp4" poster="${MEDIA}${f}.jpg" controls autoplay playsinline></video>`;
+  let v = p.querySelector("video");
+  if (!v) {
+    v = document.createElement("video");
+    v.controls = true; v.playsInline = true; v.setAttribute("playsinline", ""); v.preload = "auto";
+    v.addEventListener("play", () => duck(true));
+    v.addEventListener("pause", () => duck(false));
+    v.addEventListener("ended", () => { duck(false); v.currentTime = 0; });
+    p.append(v);
+  }
+  v.pause();
+  v.src = `${MEDIA}${f}.mp4`; v.poster = `${MEDIA}${f}.jpg`;
+  v.load();
+  const go = v.play(); if (go) go.catch(() => {}); // if a browser still blocks it, the controls are right there
+  card.querySelectorAll(".films figure").forEach((fig) => fig.classList.toggle("on", fig.dataset.f === f));
   p.scrollIntoView({ block: "nearest", behavior: "smooth" });
 }
-function closeCard() { card.querySelectorAll("video").forEach((v) => v.pause()); card.classList.remove("show"); }
+// quiet the moon music while a film plays
+function duck(on) { if (AC && soundOn) OUT.gain.setTargetAtTime(on ? .12 : .9, AC.currentTime, .4); }
+function closeCard() { card.querySelectorAll("video").forEach((v) => v.pause()); duck(false); card.classList.remove("show"); }
 function tag(it, x, y) {
   document.querySelectorAll(".tag").forEach((e) => e.remove());
   const e = document.createElement("div"); e.className = "tag glass"; e.innerHTML = `<b>i love ${it.label}</b><span>${it.line}</span>`;

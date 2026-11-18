@@ -31,6 +31,8 @@
   .card h2 { margin: 6px 0 8px; font-family: "Cormorant Garamond", Georgia, serif; font-weight: 500; font-size: 38px; line-height: 1; }
   .card p { margin: 0 0 16px; line-height: 1.6; font-size: 14.5px; color: var(--dim); }
   .card .x { position: absolute; top: 14px; right: 18px; cursor: pointer; font-size: 20px; color: var(--dim); }
+  .player video { width: 100%; display: block; border-radius: 12px; margin-bottom: 12px; background: #000; }
+  .grid img { cursor: pointer; transition: transform .2s; } .grid img:hover { transform: scale(1.03); }
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .grid img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; border-radius: 10px; }
   .phones { display: flex; gap: 10px; } .phones img { width: 31%; border-radius: 12px; }
   .item { border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; margin-bottom: 10px; } .item b { display: block; font-weight: 500; } .item span { font-size: 13.5px; color: var(--dim); }
@@ -59,7 +61,7 @@
   }
 </style></head><body>
 <canvas id="c"></canvas>
-<nav class="top"><span onclick="openCard('work')">work</span><span onclick="openCard('about')">about</span><a href="classic.html">classic</a></nav>
+<nav class="top"><span onclick="openCard('work')">work</span><span onclick="openCard('about')">about</span></nav>
 <div class="hero"><h1>hi, i'm connie <span>✦</span></h1><p>I do GTM for startups</p></div>
 <div class="bubble" id="bubble"></div>
 <div class="hint" id="hint">⟵ &nbsp;drag the moon&nbsp; ⟶</div>
@@ -124,7 +126,7 @@ const TOYS = [
 
 const MEDIA = "media/", EMAIL = "conniew0319@gmail.com", GITHUB = "https://github.com/thisisconnielin";
 const CARDS = {
-  work: { k: "01 · films", t: "watch me cook", p: "Launch films, ads & product videos for AI startups.", h: `<div class="grid">${["teamily/choose-your-squad", "hellyeah/brand-film", "hellyeah/born-for-this", "hellyeah/2am-agent", "hellyeah/moms-fridge-pixel", "traceroot/traceroot-showcase"].map((f) => `<img src="${MEDIA}${f}.jpg" alt="">`).join("")}</div><a class="go" href="classic.html">watch all 31 →</a>` },
+  work: { k: "01 · films", t: "watch me cook", p: "Launch films, ads & product videos for AI startups. Tap one to play.", h: `<div class="player" id="player"></div><div class="grid">${["teamily/choose-your-squad", "hellyeah/brand-film", "hellyeah/born-for-this", "hellyeah/2am-agent", "hellyeah/moms-fridge-pixel", "traceroot/traceroot-showcase"].map((f) => `<img src="${MEDIA}${f}.jpg" alt="" onclick="playFilm('${f}')">`).join("")}</div>` },
   belo: { k: "02 · app", t: "Belo", p: "A live map of plans nearby. Designed, built and launched solo.", h: `<div class="phones">${[1, 2, 3].map((i) => `<img src="${MEDIA}belo/screen-${i}.jpg" alt="">`).join("")}</div><a class="go" href="https://belowith.com" target="_blank" rel="noopener">belowith.com ↗</a>` },
   skills: { k: "03 · github", t: "skills i'm shipping", p: "GTM workflows I do by hand, packaged so anyone can install them.", h: `<a class="item" href="${GITHUB}/tripwire" target="_blank" rel="noopener"><b>Tripwire ↗</b><span>Tracks what competitors change, launch and post, and what to do about it.</span></a><a class="item" href="${GITHUB}/piltover-forge" target="_blank" rel="noopener"><b>Piltover Forge ↗</b><span>GTM runes. First up: Eyeball Collection, an evidence-backed brand report.</span></a><a class="go" href="${GITHUB}" target="_blank" rel="noopener">github ↗</a>` },
   hi: { k: "04 · mail", t: "say hi", p: "DM for collabs, launches, GTM help, or a coffee chat.", h: `<a class="item" href="https://x.com/lwqconnie" target="_blank" rel="noopener"><b>@lwqconnie</b><span>X</span></a><a class="item" href="https://www.instagram.com/lwqconnie" target="_blank" rel="noopener"><b>@lwqconnie</b><span>Instagram</span></a><a class="item" href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank" rel="noopener"><b>Connie Lin</b><span>LinkedIn</span></a><a class="go" href="mailto:${EMAIL}" target="_blank">send a letter ✉</a>` },
@@ -283,7 +285,13 @@ function flyNote(dt, t) {
 }
 bubble.onclick = () => near >= 0 && openCard(LANDMARKS[near].id);
 function openCard(id) { const c = CARDS[id]; card.innerHTML = `<span class="x" onclick="closeCard()">×</span><div class="k">${c.k}</div><h2>${c.t}</h2>${c.p ? `<p>${c.p}</p>` : ""}${c.h}`; card.classList.add("show"); hint.style.opacity = 0; }
-function closeCard() { card.classList.remove("show"); }
+// films play right inside the card
+function playFilm(f) {
+  const p = document.getElementById("player");
+  p.innerHTML = `<video src="${MEDIA}${f}.mp4" poster="${MEDIA}${f}.jpg" controls autoplay playsinline></video>`;
+  p.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+function closeCard() { card.querySelectorAll("video").forEach((v) => v.pause()); card.classList.remove("show"); }
 function tag(it, x, y) {
   document.querySelectorAll(".tag").forEach((e) => e.remove());
   const e = document.createElement("div"); e.className = "tag glass"; e.innerHTML = `<b>i love ${it.label}</b><span>${it.line}</span>`;

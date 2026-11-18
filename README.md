@@ -2,7 +2,7 @@
 
 **Live: https://thisisconnielin.github.io/connie-portfolio/**
 
-A single-page personal site: a sticker cat walks on a photoreal moon you can drag. Projects stand on the horizon and open as cards. Small stickers (things I love) bounce, drive and float around the moon, and a paper plane tows a note with my socials across the sky. It is a static site with no build step and no dependencies: one HTML file and a canvas. GitHub Pages serves it as-is.
+A single-page personal site: a sticker cat walks on a photoreal moon you can drag. Projects stand on the horizon and open as cards, and films play right inside them. Small stickers (things I love) bounce, drive and float around the moon, and a paper plane tows a note with my socials across the sky. It is a static site with no build step and no dependencies: one HTML file and a canvas. GitHub Pages serves it as-is.
 
 ## Make your own (Claude skill)
 
@@ -28,8 +28,7 @@ python3 -m http.server 8000
 
 - `index.html` — the moon site: layout, motion, and all content (projects, cards, stickers, socials)
 - `assets/` — moon texture, galaxy, the cat, project and toy stickers (transparent PNG / WebP)
-- `media/` — film posters and Belo screenshots used in the cards
-- `classic.html`, `app.js`, `data.js`, `style.css` — the previous pixel-desktop site, kept at `/classic.html` with all 31 films
+- `media/` — the films, posters and Belo screenshots used in the cards
 - `tools/` — scripts that made the art: cut stickers out of one render (`cut_ref.py`), wrap a moon texture (`make_moon.py`), slice generated sticker sheets (`slice.py`), and the image prompt (`codex-assets-prompt.md`)
 - `skills/moon-portfolio/` — the Claude skill for making your own
 

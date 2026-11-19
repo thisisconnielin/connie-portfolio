@@ -125,7 +125,7 @@ const TOYS = [
   ["bags", "i have a bag for my bags.", "sway", "👜"],
   ["traveling", "my suitcase has more miles than i do.", "walk", "🧳"],
   ["cats", "obviously. look who's walking on this moon.", "float", "🐱"],
-].map(([label, line, mode, emoji, file], i) => ({ label, line, mode, emoji, file: file || `toy-${String(i).padStart(2, "0")}`, ph: i * 1.7, h: 0, vh: 0, sq: 0 }));
+].map(([label, line, mode, emoji, file], i) => ({ label, line, mode, emoji, file, ph: i * 1.7, h: 0, vh: 0, sq: 0 })); // no file → emoji (never guess a file by position)
 
 const MEDIA = "media/", EMAIL = "conniew0319@gmail.com", GITHUB = "https://github.com/thisisconnielin";
 const CARDS = {
@@ -410,7 +410,7 @@ addEventListener("pointerdown", () => { audioInit(); AC.resume(); }, { once: tru
   const [moon, galaxy, galaxyPh, ...catFrames] = await Promise.all([load(A + "moon.webp"), load(A + "galaxy.png"), Promise.resolve(null), ...[0, 1, 2, 3, 4].map((i) => load(A + `cat-${i}.png`))]);
   moonImg = moon || placeholderMoon(2000); galaxyImg = galaxy || galaxyPh;
   cat = catFrames.filter(Boolean); if (!cat.length) cat = [emojiSticker("🐱", 220)];
-  await Promise.all([...LANDMARKS, ...TOYS].map(async (o) => { o.img = (await load(A + o.file + ".png")) || emojiSticker(o.emoji); }));
+  await Promise.all([...LANDMARKS, ...TOYS].map(async (o) => { o.img = (o.file && (await load(A + o.file + ".png"))) || emojiSticker(o.emoji); }));
   build(); theta = -LANDMARKS[0].a + 14; vel = dir * stroll(); requestAnimationFrame(tick);
 })();
 </script></body></html>

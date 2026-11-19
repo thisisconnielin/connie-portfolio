@@ -41,10 +41,8 @@
   .about p { margin: 0 0 12px; font-size: 14.5px; line-height: 1.65; color: var(--paper); opacity: .86; }
   .about .meta { font-size: 12.5px; letter-spacing: .06em; color: var(--dim); margin-top: 6px; }
   .about .link { color: var(--rose); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-style: dotted; }
-  .me { margin: 22px 0 4px; } .me img { width: 100%; display: block; border-radius: 14px; box-shadow: 0 0 0 4px #fffdf7, 0 14px 30px rgba(0,0,0,.45); }
+  .me { margin: 4px 0 18px; } .me img { width: 100%; display: block; border-radius: 14px; box-shadow: 0 0 0 4px #fffdf7, 0 14px 30px rgba(0,0,0,.45); }
   .me figcaption { margin-top: 10px; text-align: center; font-family: "Cormorant Garamond", Georgia, serif; font-size: 17px; letter-spacing: .06em; color: var(--dim); }
-  .reveal { opacity: 0; transform: translateY(26px) scale(.97); transition: opacity .8s ease, transform .9s cubic-bezier(.2, 1.3, .4, 1); }
-  .reveal.in { opacity: 1; transform: none; }
   .socials { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .socials a { padding: 6px 12px; border: 1px solid var(--line); border-radius: 99px; color: var(--paper); text-decoration: none; font-size: 13px; }
   .socials a:hover { background: var(--paper); color: var(--ink); }
@@ -149,9 +147,9 @@ const CARDS = {
       <p>I'm also building <span class="link" onclick="openCard('belo')">Belo</span>, a project inspired by something I genuinely care about: making it easier for people to find their people, make plans, and turn online connections into real-life experiences.</p>
       <p>I love bringing people and ideas together, whether that's through technology, community, or a spontaneous dinner plan.</p>
       <p>Always down for a coffee, a food adventure, a spontaneous trip, or meeting a new cat. :)</p>
+      <figure class="me"><img src="${MEDIA}connie.jpg" alt="Connie on Market Street, San Francisco"><figcaption>hi from SF ✦</figcaption></figure>
       <p class="meta">33 videos · 3 startups · 1 app in the works</p>
-      <div class="socials"><a href="https://x.com/itspeenut" target="_blank">X @itspeenut</a><a href="https://www.xiaohongshu.com/search_result?keyword=itspeenut" target="_blank">小红书 @itspeenut</a><a href="https://www.instagram.com/lwqconnie" target="_blank">IG @lwqconnie</a><a href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank">LinkedIn Connie Lin</a></div>
-      <figure class="me reveal"><img src="${MEDIA}connie.jpg" alt="Connie on Market Street, San Francisco"><figcaption>hi from SF ✦</figcaption></figure></div>` },
+      <div class="socials"><a href="https://x.com/itspeenut" target="_blank">X @itspeenut</a><a href="https://www.xiaohongshu.com/search_result?keyword=itspeenut" target="_blank">小红书 @itspeenut</a><a href="https://www.instagram.com/lwqconnie" target="_blank">IG @lwqconnie</a><a href="https://www.linkedin.com/in/connie-lin-174b2b263" target="_blank">LinkedIn Connie Lin</a></div></div>` },
 };
 
 /* ---------- placeholders (used until Codex's assets are in assets/trim/) ---------- */
@@ -294,14 +292,7 @@ function flyNote(dt, t) {
   note.style.transform = `translate(${noteX}px, ${y}px) rotate(${Math.sin(t * .8) * 3}deg)`;
 }
 bubble.onclick = () => near >= 0 && openCard(LANDMARKS[near].id);
-function openCard(id) { sfx("open"); const c = CARDS[id]; card.innerHTML = `<span class="x" onclick="closeCard()">×</span><div class="k">${c.k}</div><h2>${c.t}</h2>${c.p ? `<p>${c.p}</p>` : ""}${c.h}`; card.scrollTop = 0; card.classList.add("show"); hint.style.opacity = 0; watchReveals(); }
-// things marked .reveal float in when the reader scrolls down to them inside the card
-let revealer;
-function watchReveals() {
-  revealer?.disconnect();
-  revealer = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("in")), { root: card, threshold: .25 });
-  card.querySelectorAll(".reveal").forEach((el) => revealer.observe(el));
-}
+function openCard(id) { sfx("open"); const c = CARDS[id]; card.innerHTML = `<span class="x" onclick="closeCard()">×</span><div class="k">${c.k}</div><h2>${c.t}</h2>${c.p ? `<p>${c.p}</p>` : ""}${c.h}`; card.scrollTop = 0; card.classList.add("show"); hint.style.opacity = 0; }
 // films play right inside the card
 function playFilm(f) {
   // one video element per card: swap its source and call play() inside the tap, so every film plays (not just the first)
